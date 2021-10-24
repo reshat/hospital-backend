@@ -5,6 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.sql.Date;
+
 @SpringBootApplication
 public class HospitalApplication {
 
@@ -12,14 +14,25 @@ public class HospitalApplication {
         SpringApplication.run(HospitalApplication.class, args);
     }
 
+//    @Bean
+//    CommandLineRunner commandLineRunner(DoctorRepository doctorRepository) {
+//        return args -> {
+//            Doctor test_doctor = new Doctor(
+//                    "Иван",
+//                    "Иванов",
+//                    "Иванович");
+//            doctorRepository.save(test_doctor);
+//        };
+//    }
     @Bean
-    CommandLineRunner commandLineRunner(DoctorRepository doctorRepository) {
+    CommandLineRunner commandLineRunner(PatientRepository patientRepository) {
         return args -> {
-            Doctor test_doctor = new Doctor(
+            Patient test_patient = new Patient(
                     "Иван",
                     "Иванов",
-                    "Иванович");
-            doctorRepository.save(test_doctor);
+                    "Иванович",
+                    Date.valueOf("1990-01-01"));
+            patientRepository.save(test_patient);
         };
     }
 }
