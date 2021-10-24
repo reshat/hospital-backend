@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+/.idea/
+/hospital/build/
+/hospital/.gradle/
