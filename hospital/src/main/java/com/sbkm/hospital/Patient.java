@@ -34,13 +34,13 @@ public class Patient {
     )
     private String patronymic;
     @Column(
-            name="birth date",
+            name="birth_date",
             nullable = false,
             columnDefinition = "DATE"
     )
-    private Date birth_date;
+    private java.util.Date birth_date;
 
-    public Patient(String name, String surname, String patronymic, Date birth_date) {
+    public Patient(String name, String surname, String patronymic, java.util.Date birth_date) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
@@ -82,11 +82,11 @@ public class Patient {
         this.patronymic = patronymic;
     }
 
-    public Date getBirth_date() {
+    public java.util.Date getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(Date birth_date) {
+    public void setBirth_date(java.util.Date birth_date) {
         this.birth_date = birth_date;
     }
 

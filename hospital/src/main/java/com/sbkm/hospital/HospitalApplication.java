@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 @SpringBootApplication
 public class HospitalApplication {
@@ -27,11 +27,12 @@ public class HospitalApplication {
     @Bean
     CommandLineRunner commandLineRunner(PatientRepository patientRepository) {
         return args -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Patient test_patient = new Patient(
                     "Иван",
                     "Иванов",
                     "Иванович",
-                    Date.valueOf("1990-01-01"));
+                    dateFormat.parse("1990-01-01"));
             patientRepository.save(test_patient);
         };
     }
