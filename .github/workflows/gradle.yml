@@ -23,6 +23,6 @@ jobs:
         distribution: 'adopt'
         cache: gradle
     - name: Grant execute permission for gradlew
-      run: chmod +x hospital/gradlew
+      run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./hospital/gradlew build
+      run: ./gradlew build
