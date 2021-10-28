@@ -33,6 +33,10 @@ public class Doctor {
     )
     private String patronymic;
 
+    @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Timetable timetable;
+
     public Doctor(String name, String surname, String patronymic) {
         this.name = name;
         this.surname = surname;
@@ -73,6 +77,14 @@ public class Doctor {
 
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
+    }
+
+    public void setTimetable(Timetable timetable) {
+        this.timetable = timetable;
+    }
+
+    public Timetable getTimetable() {
+        return timetable;
     }
 
     @Override
