@@ -1,2 +1,4 @@
 FROM openjdk:8-jdk-alpine
-ARG JAR_FILE=target
+ADD build/libs/hospital-backend-0.0.1-SNAPSHOT-plain.jar hospital.jar
+ENTRYPOINT ["java", "-jar","hospital.jar"]
+EXPOSE 8080
