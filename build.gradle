@@ -9,9 +9,7 @@ plugins {
 group = 'com.sbkm'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
-sourceSets.main.java.srcDirs = ['hospital/src']
 
-mainClassName = 'com.sbkm.hospital.HospitalApplication'
 
 repositories {
     mavenCentral()
@@ -33,16 +31,4 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-bootJar {
-    enabled = false
-}
-
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'com.sbkm.hospital.HospitalApplication'
-        )
-    }
 }
