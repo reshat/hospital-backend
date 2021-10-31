@@ -1,19 +1,20 @@
 package com.sbkm.hospital;
 
 import javax.persistence.*;
+import java.sql.Date;
 
-@Entity(name = "Doctor")
-public class Doctor {
+@Entity(name="Patient")
+public class Patient {
     @Id
-            @SequenceGenerator(
-                    name = "doctor_sequence",
-                    sequenceName = "doctor_sequence",
-                    allocationSize = 1
-            )
-            @GeneratedValue(
-                    strategy = GenerationType.SEQUENCE,
-                    generator = "doctor_sequence"
-            )
+    @SequenceGenerator(
+            name = "patient_sequence",
+            sequenceName = "patient_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "patient_sequence"
+    )
     private Long id;
     @Column(
             name = "name",
@@ -32,19 +33,21 @@ public class Doctor {
             columnDefinition = "TEXT"
     )
     private String patronymic;
+    @Column(
+            name="birth_date",
+            nullable = false,
+            columnDefinition = "DATE"
+    )
+    private java.util.Date birth_date;
 
-    @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Timetable timetable;
-
-    public Doctor(String name, String surname, String patronymic) {
+    public Patient(String name, String surname, String patronymic, java.util.Date birth_date) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
+        this.birth_date = birth_date;
     }
 
-    public Doctor() {
-
+    public Patient() {
     }
 
     public Long getId() {
@@ -79,21 +82,22 @@ public class Doctor {
         this.patronymic = patronymic;
     }
 
-    public void setTimetable(Timetable timetable) {
-        this.timetable = timetable;
+    public java.util.Date getBirth_date() {
+        return birth_date;
     }
 
-    public Timetable getTimetable() {
-        return timetable;
+    public void setBirth_date(java.util.Date birth_date) {
+        this.birth_date = birth_date;
     }
 
     @Override
     public String toString() {
-        return "Doctor{" +
+        return "Patient{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", patronymic='" + patronymic + '\'' +
+                ", birth_date=" + birth_date +
                 '}';
     }
 }
