@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   API:
-    image: reshatsultan/hospital:main-31fc5b3
+    image: reshatsultan/hospital:latest
     ports:
       - "8081:8080"
     environment:
