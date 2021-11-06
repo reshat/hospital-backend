@@ -3,6 +3,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.Doc;
@@ -16,6 +17,7 @@ public class HospitalController {
     }
 
     @GetMapping("/test")
+    @PreAuthorize("hasAuthority('patient:read')")
     String test() {
         System.out.println("test mapping incoming");
         return "answer to test string";

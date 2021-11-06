@@ -14,13 +14,20 @@ public class HospitalApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(DoctorRepository doctorRepository) {
+    CommandLineRunner commandLineRunner(DoctorRepository doctorRepository, UserRepository userRepository) {
         return args -> {
             Doctor test_doctor = new Doctor(
                     "Иван",
                     "Иванов",
                     "Иванович");
             doctorRepository.save(test_doctor);
+            User test_user = new User(
+                    "user",
+                    "$2a$12$h8nWjz6cz08vpxC3KCd2leRIh5GGvjghd1pQRfi3wnJazvvpvZn0i",
+                    Role.PATIENT);
+            userRepository.save(test_user);
         };
     }
+
+
 }
