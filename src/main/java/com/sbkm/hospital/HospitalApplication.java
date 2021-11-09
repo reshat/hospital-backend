@@ -13,7 +13,7 @@ public class HospitalApplication {
         SpringApplication.run(HospitalApplication.class, args);
     }
 
-    @Bean
+    /*@Bean
     CommandLineRunner commandLineRunner(DoctorRepository doctorRepository, UserRepository userRepository) {
         return args -> {
             Doctor test_doctor = new Doctor(
@@ -27,7 +27,7 @@ public class HospitalApplication {
                     Role.PATIENT);
             userRepository.save(test_user);
         };
-    }
+    }*/
 
 
 }
