@@ -19,7 +19,9 @@ public class HospitalApplication {
             Doctor test_doctor = new Doctor(
                     "Иван",
                     "Иванов",
-                    "Иванович");
+                    "Иванович",
+                    "",
+                    "");
             doctorRepository.save(test_doctor);
             User test_user = new User(
                     "user",

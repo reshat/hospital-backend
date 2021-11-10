@@ -32,15 +32,27 @@ public class Doctor {
             columnDefinition = "TEXT"
     )
     private String patronymic;
+    @Column(
+            name = "specialization",
+            columnDefinition = "TEXT"
+    )
+    private String specialization;
+    @Column(
+            name = "work_experiences",
+            columnDefinition = "TEXT"
+    )
+    private String work_experiences;
 
     @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Timetable timetable;
 
-    public Doctor(String name, String surname, String patronymic) {
+    public Doctor(String name, String surname, String patronymic, String specialization, String work_experiences) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
+        this.specialization = specialization;
+        this.work_experiences = work_experiences;
     }
 
     public Doctor() {
@@ -87,6 +99,22 @@ public class Doctor {
         return timetable;
     }
 
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public String getWork_experiences() {
+        return work_experiences;
+    }
+
+    public void setWork_experiences(String work_experiences) {
+        this.work_experiences = work_experiences;
+    }
+
     @Override
     public String toString() {
         return "Doctor{" +
@@ -94,6 +122,8 @@ public class Doctor {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", patronymic='" + patronymic + '\'' +
+                ", specialization='" + specialization + '\'' +
+                ", work_experiences='" + work_experiences + '\'' +
                 '}';
     }
 }
