@@ -16,14 +16,14 @@ public class HospitalController {
     }
 
     @GetMapping("/test")
-    @CrossOrigin("http://localhost:3000")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAuthority('patient:read')")
     String test() {
         System.out.println("test mapping incoming");
         return "answer to test string";
     }
     @GetMapping("/general")
-    @CrossOrigin("http://localhost:3000")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     String general() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         GeneralInformation data = new GeneralInformation();
@@ -31,14 +31,14 @@ public class HospitalController {
         return result;
     }
     @GetMapping("/doctors")
-    @CrossOrigin("http://localhost:3000")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public @ResponseBody
     Iterable<Doctor> getAllDoctor() {
         Iterable<Doctor> doctors = doctorRepository.findAll();
         return doctors;
     }
     @GetMapping("/testAdd")
-    @CrossOrigin("http://localhost:3000")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     void testAdd() {
         User test_user = new User(
                 "user",
