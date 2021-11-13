@@ -5,6 +5,13 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity(name = "Timetable")
+@NamedQuery(name = "Timetable.getSchedule",
+        query = "select doctor_id,surname,date,receipt_start,receipt_end " +
+                "from Timetable " +
+                "where doctor_id = ?1 " +
+                "and date >= current_date " +
+                "and date <= (current_date + 14 - extract(isodow from current_date)::int) " +
+                "group by doctor_id,surname,receipt_start,receipt_start,receipt_end")
 public class Timetable {
     @Id
     @Column(name = "doctor_id")

@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 public class HospitalController {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
+    private final TimetableRepository timetableRepository;
 
-    HospitalController(DoctorRepository repository, UserRepository userRepository) {
+    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository) {
         this.doctorRepository = repository;
         this.userRepository = userRepository;
+        this.timetableRepository = timetableRepository;
     }
 
     @GetMapping("/test")
@@ -45,6 +47,13 @@ public class HospitalController {
                 "$2a$12$h8nWjz6cz08vpxC3KCd2leRIh5GGvjghd1pQRfi3wnJazvvpvZn0i",
                 Role.PATIENT);
         userRepository.save(test_user);
+    }
+    @GetMapping("/calendar/{id}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    Iterable<Timetable> getDoctorSchedule(@PathVariable Long id) {
+        Iterable<Timetable> tt = timetableRepository.getSchedule(id);
+        return tt;
     }
 
 }
