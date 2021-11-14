@@ -20,40 +20,40 @@ public class HospitalApplication {
         SpringApplication.run(HospitalApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner commandLineRunner(DoctorRepository doctorRepository, TimetableRepository timetableRepository) {
-        return args -> {
-            Doctor test_doctor = new Doctor(
-                    "Иван",
-                    "Иванов",
-                    "Иванович",
-                    "",
-                    "");
-// Order of save matters!!!
-            doctorRepository.save(test_doctor);
-
-            Timetable test_table = new Timetable(
-                    test_doctor,
-                    LocalDate.parse("2021-11-14"),
-                    LocalTime.parse("10:30"),
-                    LocalTime.parse("18:00"));
-//            test_doctor.getTimetable().add(test_table);
-            timetableRepository.save(test_table);
-            Timetable test_table1 = new Timetable(
-                    test_doctor,
-                    LocalDate.parse("2021-11-21"),
-                    LocalTime.parse("10:30"),
-                    LocalTime.parse("18:00"));
-//            test_doctor.getTimetable().add(test_table1);
-            timetableRepository.save(test_table1);
-            Timetable test_table2 = new Timetable(
-                    test_doctor,
-                    LocalDate.parse("2021-11-22"),
-                    LocalTime.parse("10:30"),
-                    LocalTime.parse("18:00"));
-//            test_doctor.getTimetable().add(test_table2);
-            timetableRepository.save(test_table2);
-        };
+//    @Bean
+//    CommandLineRunner commandLineRunner(DoctorRepository doctorRepository, TimetableRepository timetableRepository) {
+//        return args -> {
+//            Doctor test_doctor = new Doctor(
+//                    "Иван",
+//                    "Иванов",
+//                    "Иванович",
+//                    "",
+//                    "");
+//// Order of save matters!!!
+//            doctorRepository.save(test_doctor);
+//
+//            Timetable test_table = new Timetable(
+//                    test_doctor,
+//                    LocalDate.parse("2021-11-14"),
+//                    LocalTime.parse("10:30"),
+//                    LocalTime.parse("18:00"));
+////            test_doctor.getTimetable().add(test_table);
+//            timetableRepository.save(test_table);
+//            Timetable test_table1 = new Timetable(
+//                    test_doctor,
+//                    LocalDate.parse("2021-11-21"),
+//                    LocalTime.parse("10:30"),
+//                    LocalTime.parse("18:00"));
+////            test_doctor.getTimetable().add(test_table1);
+//            timetableRepository.save(test_table1);
+//            Timetable test_table2 = new Timetable(
+//                    test_doctor,
+//                    LocalDate.parse("2021-11-22"),
+//                    LocalTime.parse("10:30"),
+//                    LocalTime.parse("18:00"));
+////            test_doctor.getTimetable().add(test_table2);
+//            timetableRepository.save(test_table2);
+//        };
     /*@Bean
     CommandLineRunner commandLineRunner(DoctorRepository doctorRepository, UserRepository userRepository) {
         return args -> {
@@ -73,5 +73,4 @@ public class HospitalApplication {
     }*/
 
 
-}
 }
