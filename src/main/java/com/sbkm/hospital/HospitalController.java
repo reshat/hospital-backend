@@ -2,6 +2,7 @@ package com.sbkm.hospital;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.mapping.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 public class HospitalController {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
+    private final TimetableRepository timetableRepository;
 
-    HospitalController(DoctorRepository repository, UserRepository userRepository) {
+    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository) {
         this.doctorRepository = repository;
         this.userRepository = userRepository;
+        this.timetableRepository = timetableRepository;
     }
 
     @GetMapping("/test")
@@ -46,5 +49,11 @@ public class HospitalController {
                 Role.PATIENT);
         userRepository.save(test_user);
     }
-
+    @GetMapping("/calendar")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    Iterable<Timetable> getDoctorSchedule(@RequestParam String id) {
+        Iterable<Timetable> tt = timetableRepository.getSchedule(Long.valueOf(id));
+        return tt;
+    }
 }

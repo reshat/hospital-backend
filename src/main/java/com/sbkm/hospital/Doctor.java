@@ -1,6 +1,8 @@
 package com.sbkm.hospital;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "Doctor")
 public class Doctor {
@@ -43,9 +45,10 @@ public class Doctor {
     )
     private String work_experiences;
 
-    @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Timetable timetable;
+    @OneToMany(mappedBy = "doctor",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Timetable> timetable = new ArrayList<>();
 
     public Doctor(String name, String surname, String patronymic, String specialization, String work_experiences) {
         this.name = name;
@@ -91,11 +94,11 @@ public class Doctor {
         this.patronymic = patronymic;
     }
 
-    public void setTimetable(Timetable timetable) {
+    public void setTimetable(List<Timetable> timetable) {
         this.timetable = timetable;
     }
 
-    public Timetable getTimetable() {
+    public List<Timetable> getTimetable() {
         return timetable;
     }
 
