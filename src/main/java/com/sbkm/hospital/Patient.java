@@ -2,6 +2,7 @@ package com.sbkm.hospital;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity(name="Patient")
 public class Patient {
@@ -38,9 +39,9 @@ public class Patient {
             nullable = false,
             columnDefinition = "DATE"
     )
-    private java.util.Date birth_date;
+    private LocalDate birth_date;
 
-    public Patient(String name, String surname, String patronymic, java.util.Date birth_date) {
+    public Patient(String name, String surname, String patronymic, LocalDate birth_date) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
@@ -82,11 +83,11 @@ public class Patient {
         this.patronymic = patronymic;
     }
 
-    public java.util.Date getBirth_date() {
+    public LocalDate getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(java.util.Date birth_date) {
+    public void setBirth_date(LocalDate birth_date) {
         this.birth_date = birth_date;
     }
 
