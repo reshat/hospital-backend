@@ -41,9 +41,6 @@ public class Patient {
     )
     private LocalDate birth_date;
 
-    @OneToMany(mappedBy = "patient")
-    private List<PatientRecord> records;
-
     public Patient(String name, String surname, String patronymic, LocalDate birth_date) {
         this.name = name;
         this.surname = surname;

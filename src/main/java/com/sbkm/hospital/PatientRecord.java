@@ -2,6 +2,7 @@ package com.sbkm.hospital;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Entity(name="PatientRecord")
 public class PatientRecord {
@@ -16,15 +17,18 @@ public class PatientRecord {
             generator = "patient_record_sequence"
     )
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
-
-    @ManyToOne
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
-
+    @Column(
+            name = "patient_id",
+            nullable = false,
+            columnDefinition = "BIGINT"
+    )
+    private Long patient_id;
+    @Column(
+            name = "doctor_id",
+            nullable = false,
+            columnDefinition = "BIGINT"
+    )
+    private Long doctor_id;
     @Column(
             name = "date",
             nullable = false,
@@ -40,9 +44,9 @@ public class PatientRecord {
     public PatientRecord() {
     }
 
-    public PatientRecord(Patient patient_id, Doctor doctor_id, LocalDate date_of_receipt, String record) {
-        this.patient = patient_id;
-        this.doctor = doctor_id;
+    public PatientRecord(Long patient_id, Long doctor_id, LocalDate date_of_receipt, String record) {
+        this.patient_id = patient_id;
+        this.doctor_id = doctor_id;
         this.date_of_receipt = date_of_receipt;
         this.record = record;
     }
@@ -55,20 +59,20 @@ public class PatientRecord {
         this.id = id;
     }
 
-    public Long getPatient() {
-        return patient.getId();
+    public Long getPatient_id() {
+        return patient_id;
     }
 
-    public void setPatient(Long patient_id) {
-        this.patient.setId(patient_id);
+    public void setPatient_id(Long patient_id) {
+        this.patient_id = patient_id;
     }
 
-    public Long getDoctor() {
-        return doctor.getId();
+    public Long getDoctor_id() {
+        return doctor_id;
     }
 
-    public void setDoctor(Long doctor_id) {
-        this.doctor.setId(doctor_id);
+    public void setDoctor_id(Long doctor_id) {
+        this.doctor_id = doctor_id;
     }
 
     public LocalDate getDate_of_receipt() {

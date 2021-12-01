@@ -49,9 +49,6 @@ public class Doctor {
             orphanRemoval = true)
     private List<Timetable> timetable;
 
-    @OneToMany(mappedBy = "doctor")
-    private List<PatientRecord> records;
-
     public Doctor(String name, String surname, String patronymic, String specialization, String work_experiences) {
         this.name = name;
         this.surname = surname;
