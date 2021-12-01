@@ -1,8 +1,8 @@
 package com.sbkm.hospital;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity(name="Patient")
 public class Patient {
@@ -40,6 +40,9 @@ public class Patient {
             columnDefinition = "DATE"
     )
     private LocalDate birth_date;
+
+    @OneToMany(mappedBy = "patient")
+    private List<PatientRecord> records;
 
     public Patient(String name, String surname, String patronymic, LocalDate birth_date) {
         this.name = name;
