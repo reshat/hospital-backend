@@ -1,7 +1,6 @@
 package com.sbkm.hospital;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Doctor")
@@ -48,7 +47,7 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<Timetable> timetable = new ArrayList<>();
+    private List<Timetable> timetable;
 
     public Doctor(String name, String surname, String patronymic, String specialization, String work_experiences) {
         this.name = name;

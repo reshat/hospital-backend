@@ -8,20 +8,22 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-
 @RestController
 public class HospitalController {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
     private final TimetableRepository timetableRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PatientRepository patientRepository;
+    private final PatientRecordRepository patientRecordRepository;
 
-    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder) {
+    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository) {
         this.doctorRepository = repository;
         this.userRepository = userRepository;
         this.timetableRepository = timetableRepository;
         this.passwordEncoder = passwordEncoder;
+        this.patientRepository = patientRepository;
+        this.patientRecordRepository = patientRecordRepository;
     }
 
     @GetMapping("/test")
@@ -73,6 +75,27 @@ public class HospitalController {
 
     }
 
+    @PostMapping("/patientRecord")
+    @PreAuthorize("hasAuthority('doctor:write')")
+    @ResponseBody
+    public ResponseEntity<?> patientRecord(@ModelAttribute PatientRecordDto patientRecordDto){
+        System.out.println(patientRecordDto.getDoctor_id());
+        if(!doctorRepository.existsById(patientRecordDto.getDoctor_id())){
+            return new ResponseEntity<>("Unknown Doctor ID", HttpStatus.BAD_REQUEST);
+        }
+        if(!patientRepository.existsById(patientRecordDto.getPatient_id())){
+            return new ResponseEntity<>("Unknown Patient ID", HttpStatus.BAD_REQUEST);
+        }
+
+        PatientRecord patientRecord = new PatientRecord();
+        patientRecord.setDoctor_id(patientRecordDto.getDoctor_id());
+        patientRecord.setPatient_id(patientRecordDto.getPatient_id());
+        patientRecord.setDate_of_receipt(patientRecordDto.getDate_of_receipt());
+        patientRecord.setRecord(patientRecordDto.getRecord());
+        patientRecordRepository.save(patientRecord);
+        return new ResponseEntity<>("Record added successfully", HttpStatus.OK);
+
+    }
 
     @GetMapping("/calendar")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
