@@ -49,6 +49,7 @@ public class HospitalController {
         return doctors;
     }
     @PostMapping("/signup")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @ResponseBody
     public ResponseEntity<?> registerUser(@ModelAttribute SignUpDto signUpDto){
 
@@ -76,6 +77,7 @@ public class HospitalController {
     }
 
     @PostMapping("/patientRecord")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAuthority('doctor:write')")
     @ResponseBody
     public ResponseEntity<?> patientRecord(@ModelAttribute PatientRecordDto patientRecordDto){
@@ -103,6 +105,15 @@ public class HospitalController {
     Iterable<Timetable> getDoctorSchedule(@RequestParam String id) {
         Iterable<Timetable> tt = timetableRepository.getSchedule(Long.valueOf(id));
         return tt;
+    }
+
+    @GetMapping("/viewRecords")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PreAuthorize("hasAuthority('patient:read')")
+    public @ResponseBody
+    Iterable<PatientRecord> getPatientRecord(@RequestParam String id) {
+        Iterable<PatientRecord> patientRecord = patientRecordRepository.viewRecords(Long.valueOf(id));
+        return patientRecord;
     }
 }
   /*@GetMapping("/testAdd")
