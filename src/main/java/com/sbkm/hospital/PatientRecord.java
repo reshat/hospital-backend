@@ -5,6 +5,12 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Entity(name="PatientRecord")
+@NamedQuery(name = "PatientRecord.viewRecords",
+        query = "select d.name,d.surname,d.patronymic,pr.date_of_receipt,pr.record " +
+                "from PatientRecord pr " +
+                "left join Doctor d on d.id = pr.doctor_id " +
+                "where pr.patient_id = ?1 " +
+                "group by d.name,d.surname,d.patronymic,pr.date_of_receipt,pr.record")
 public class PatientRecord {
     @Id
     @SequenceGenerator(
