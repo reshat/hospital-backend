@@ -3,10 +3,16 @@ package com.sbkm.hospital;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 public class HospitalController {
@@ -18,7 +24,7 @@ public class HospitalController {
     private final PatientRecordRepository patientRecordRepository;
     private final AppointmentTableRepository appointmentTableRepository;
 
-    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository, AppointmentTableRepository appointmentTableRepository) {
+    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository, AppointmentTableRepository appointmentTableRepository, UserDetailsServiceImp userDetailsServiceImp) {
         this.doctorRepository = repository;
         this.userRepository = userRepository;
         this.timetableRepository = timetableRepository;
@@ -34,6 +40,17 @@ public class HospitalController {
     String test() {
         System.out.println("test mapping incoming");
         return "answer to test string";
+    }
+    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    User getAuthUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
+        }
+        User user = userRepository.findByLogin(auth.getName()).orElse(new User());
+        return user;
     }
     @GetMapping("/general")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
