@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Role {
-    PATIENT(Set.of(Permission.PATIENT_READ,Permission.PATIENT_WRITE)),
-    DOCTOR(Set.of(Permission.DOCTOR_READ,Permission.DOCTOR_WRITE, Permission.PATIENT_WRITE));
+    PATIENT(Set.of(Permission.PATIENT_READ, Permission.PATIENT_WRITE)),
+    DOCTOR(Set.of(Permission.DOCTOR_READ,Permission.DOCTOR_WRITE,Permission.PATIENT_READ, Permission.PATIENT_WRITE));
 
     private final Set<Permission> permissions;
 
