@@ -16,14 +16,16 @@ public class HospitalController {
     private final PasswordEncoder passwordEncoder;
     private final PatientRepository patientRepository;
     private final PatientRecordRepository patientRecordRepository;
+    private final AppointmentTableRepository appointmentTableRepository;
 
-    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository) {
+    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository, AppointmentTableRepository appointmentTableRepository) {
         this.doctorRepository = repository;
         this.userRepository = userRepository;
         this.timetableRepository = timetableRepository;
         this.passwordEncoder = passwordEncoder;
         this.patientRepository = patientRepository;
         this.patientRecordRepository = patientRecordRepository;
+        this.appointmentTableRepository = appointmentTableRepository;
     }
 
     @GetMapping("/test")
@@ -79,7 +81,6 @@ public class HospitalController {
     @PreAuthorize("hasAuthority('doctor:write')")
     @ResponseBody
     public ResponseEntity<?> patientRecord(@ModelAttribute PatientRecordDto patientRecordDto){
-        System.out.println(patientRecordDto.getDoctor_id());
         if(!doctorRepository.existsById(patientRecordDto.getDoctor_id())){
             return new ResponseEntity<>("Unknown Doctor ID", HttpStatus.BAD_REQUEST);
         }
@@ -103,6 +104,30 @@ public class HospitalController {
     Iterable<Timetable> getDoctorSchedule(@RequestParam String id) {
         Iterable<Timetable> tt = timetableRepository.getSchedule(Long.valueOf(id));
         return tt;
+    }
+
+    @PostMapping("/makeAnAppointment")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PreAuthorize("hasAuthority('patient:write')")
+    @ResponseBody
+    public ResponseEntity<?> makeAnAppointment(@ModelAttribute AppointmentTableDto appointmentTableDto){
+        if(!doctorRepository.existsById(appointmentTableDto.getDoctor_id())){
+            return new ResponseEntity<>("Unknown Doctor ID", HttpStatus.BAD_REQUEST);
+        }
+        if(!patientRepository.existsById(appointmentTableDto.getPatient_id())){
+            return new ResponseEntity<>("Unknown Patient ID", HttpStatus.BAD_REQUEST);
+        }
+        if(appointmentTableRepository.countByPatientId(appointmentTableDto.getPatient_id()) >= 2){
+            return new ResponseEntity<>("Reached maximum number of appointments", HttpStatus.BAD_REQUEST);
+        }
+        AppointmentTable appointmentTable = new AppointmentTable();
+        appointmentTable.setDoctor_id(appointmentTableDto.getDoctor_id());
+        appointmentTable.setPatientId(appointmentTableDto.getPatient_id());
+        appointmentTable.setDate_of_receipt(appointmentTableDto.getDate_of_receipt());
+        appointmentTable.setTime_of_receipt(appointmentTableDto.getTime_of_receipt());
+        appointmentTable.setAppointment_duration(appointmentTableDto.getAppointment_duration());
+        appointmentTableRepository.save(appointmentTable);
+        return new ResponseEntity<>("Appointment made successfully", HttpStatus.OK);
     }
 }
   /*@GetMapping("/testAdd")
