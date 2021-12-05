@@ -139,6 +139,14 @@ public class HospitalController {
         if(appointmentTableRepository.countByPatientId(appointmentTableDto.getPatient_id()) >= 2){
             return new ResponseEntity<>("Reached maximum number of appointments", HttpStatus.BAD_REQUEST);
         }
+        if(!timetableRepository.existsByDoctorIdAndDateOfReceipt(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt())){
+            return new ResponseEntity<>("Incorrect date", HttpStatus.BAD_REQUEST);
+        }
+        int hours = appointmentTableDto.getAppointment_duration().getHour();
+        int minutes = appointmentTableDto.getAppointment_duration().getMinute();
+        if(!timetableRepository.existsByDoctorIdAndDateOfReceiptAndReceiptStartLessThanEqualAndReceiptEndGreaterThanEqual(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt(), appointmentTableDto.getTime_of_receipt(), appointmentTableDto.getTime_of_receipt().plusHours(hours).plusMinutes(minutes))){
+            return new ResponseEntity<>("Incorrect time", HttpStatus.BAD_REQUEST);
+        }
         AppointmentTable appointmentTable = new AppointmentTable();
         appointmentTable.setDoctor_id(appointmentTableDto.getDoctor_id());
         appointmentTable.setPatientId(appointmentTableDto.getPatient_id());

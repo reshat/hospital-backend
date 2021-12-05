@@ -9,15 +9,15 @@ import java.util.Objects;
 @Entity(name = "Timetable")
 @IdClass(TimetableID.class)
 @NamedQuery(name = "Timetable.getSchedule",
-        query = "select doctor_id,surname_n_initials,date_of_receipt,receipt_start,receipt_end " +
+        query = "select doctorId,surname_n_initials,dateOfReceipt,receiptStart,receiptEnd " +
                 "from Timetable " +
-                "where doctor_id = ?1 " +
-                "and date_of_receipt >= current_date " +
-                "and date_of_receipt <= (current_date + 14 - CAST ((extract(isodow from current_date)) as integer)) " +
-                "group by doctor_id,surname_n_initials,date_of_receipt,receipt_start,receipt_end")
+                "where doctorId = ?1 " +
+                "and dateOfReceipt >= current_date " +
+                "and dateOfReceipt <= (current_date + 14 - CAST ((extract(isodow from current_date)) as integer)) " +
+                "group by doctorId,surname_n_initials,dateOfReceipt,receiptStart,receiptEnd")
 public class Timetable {
     @Id
-    private Long doctor_id;
+    private Long doctorId;
     @Column(
             name = "surname",
             nullable = false,
@@ -30,46 +30,46 @@ public class Timetable {
             nullable = false,
             columnDefinition = "DATE"
     )
-    private LocalDate date_of_receipt;
+    private LocalDate dateOfReceipt;
     @Column(
             name = "receipt_start",
             nullable = false,
             columnDefinition = "TIME"
     )
-    private LocalTime receipt_start;
+    private LocalTime receiptStart;
     @Column(
             name = "receipt_end",
             nullable = false,
             columnDefinition = "TIME"
     )
-    private LocalTime receipt_end;
+    private LocalTime receiptEnd;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
+    @JoinColumn(name = "doctorId", insertable = false, updatable = false)
     private Doctor doctor;
 
     public Timetable() {
     }
 
     public Timetable(Doctor doctor, LocalDate date_of_receipt, LocalTime receipt_start, LocalTime receipt_end) {
-        this.doctor_id = doctor.getId();
+        this.doctorId = doctor.getId();
         this.surname_n_initials = doctor.getSurname()
                 + " " + doctor.getName().charAt(0);
         if(!Objects.equals(doctor.getPatronymic(), ""))
         this.surname_n_initials += "." + doctor.getPatronymic().charAt(0)
                 + ".";
-        this.date_of_receipt = date_of_receipt;
-        this.receipt_start = receipt_start;
-        this.receipt_end = receipt_end;
+        this.dateOfReceipt = date_of_receipt;
+        this.receiptStart = receipt_start;
+        this.receiptEnd = receipt_end;
 
     }
 
-    public Long getDoctor_id() {
-        return doctor_id;
+    public Long getDoctorId() {
+        return doctorId;
     }
 
-    public void setDoctor_id(Long doctor_id) {
-        this.doctor_id = doctor_id;
+    public void setDoctorId(Long doctor_id) {
+        this.doctorId = doctor_id;
     }
 
     public String getSurname_n_initials() {return surname_n_initials;}
@@ -86,38 +86,38 @@ public class Timetable {
         this.doctor = doctor;
     }
 
-    public LocalDate getDate_of_receipt() {
-        return date_of_receipt;
+    public LocalDate getDateOfReceipt() {
+        return dateOfReceipt;
     }
 
-    public void setDate_of_receipt(LocalDate date_of_receipt) {
-        this.date_of_receipt = date_of_receipt;
+    public void setDateOfReceipt(LocalDate date_of_receipt) {
+        this.dateOfReceipt = date_of_receipt;
     }
 
-    public LocalTime getReceipt_start() {
-        return receipt_start;
+    public LocalTime getReceiptStart() {
+        return receiptStart;
     }
 
-    public void setReceipt_start(LocalTime receipt_start) {
-        this.receipt_start = receipt_start;
+    public void setReceiptStart(LocalTime receipt_start) {
+        this.receiptStart = receipt_start;
     }
 
-    public LocalTime getReceipt_end() {
-        return receipt_end;
+    public LocalTime getReceiptEnd() {
+        return receiptEnd;
     }
 
-    public void setReceipt_end(LocalTime receipt_end) {
-        this.receipt_end = receipt_end;
+    public void setReceiptEnd(LocalTime receipt_end) {
+        this.receiptEnd = receipt_end;
     }
 
     @Override
     public String toString() {
         return "Timetable{" +
-                ", doctor_id=" + doctor_id +
+                ", doctor_id=" + doctorId +
                 ", surname_n_initials='" + surname_n_initials + '\'' +
-                ", date_of_receipt=" + date_of_receipt +
-                ", receipt_start=" + receipt_start +
-                ", receipt_end=" + receipt_end +
+                ", date_of_receipt=" + dateOfReceipt +
+                ", receipt_start=" + receiptStart +
+                ", receipt_end=" + receiptEnd +
                 '}';
     }
 }
