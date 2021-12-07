@@ -165,6 +165,16 @@ public class HospitalController {
         Iterable<PatientRecord> patientRecord = patientRecordRepository.viewRecords(Long.valueOf(id));
         return patientRecord;
     }
+    @PostMapping("/changeTime")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PreAuthorize("hasAuthority('admin:write')")
+    public ResponseEntity<?> changeTime(@ModelAttribute ChangeTimeDto changeTimeDto){
+        if(!timetableRepository.existsByDoctorIdAndDateOfReceipt(changeTimeDto.getDoctorId(), changeTimeDto.getDateOfReceipt())){
+            return new ResponseEntity<>("Incorrect date or doctor id", HttpStatus.BAD_REQUEST);
+        }
+        timetableRepository.changeTime(changeTimeDto.getDoctorId(), changeTimeDto.getDateOfReceipt(), changeTimeDto.getReceiptStart(), changeTimeDto.getReceiptEnd());
+        return new ResponseEntity<>("Time was changed", HttpStatus.OK);
+    }
 }
   /*@GetMapping("/testAdd")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
