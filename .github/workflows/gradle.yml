@@ -11,7 +11,20 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123456
+          POSTGRES_DB: hospital
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 16
@@ -24,7 +37,7 @@ jobs:
       run: chmod +x gradlew
     - name: Build
       id: build
-      run: ./gradlew build -x test  
+      run: ./gradlew build
     - name: Docker image build and push
       if: steps.build.outcome == 'success'
       uses: mr-smithers-excellent/docker-build-push@v5
