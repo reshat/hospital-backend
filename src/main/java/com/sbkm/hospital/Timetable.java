@@ -1,6 +1,8 @@
 package com.sbkm.hospital;
 
 
+import org.springframework.data.jpa.repository.Modifying;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +17,11 @@ import java.util.Objects;
                 "and dateOfReceipt >= current_date " +
                 "and dateOfReceipt <= (current_date + 14 - CAST ((extract(isodow from current_date)) as integer)) " +
                 "group by doctorId,surname_n_initials,dateOfReceipt,receiptStart,receiptEnd")
+@NamedQuery(name = "Timetable.changeTime",
+        query = "update Timetable " +
+                "set receiptStart = ?3, receiptEnd = ?4 " +
+                "where doctorId = ?1 " +
+                "and dateOfReceipt = ?2")
 public class Timetable {
     @Id
     private Long doctorId;
@@ -56,8 +63,8 @@ public class Timetable {
         this.surname_n_initials = doctor.getSurname()
                 + " " + doctor.getName().charAt(0);
         if(!Objects.equals(doctor.getPatronymic(), ""))
-        this.surname_n_initials += "." + doctor.getPatronymic().charAt(0)
-                + ".";
+            this.surname_n_initials += "." + doctor.getPatronymic().charAt(0)
+                    + ".";
         this.dateOfReceipt = date_of_receipt;
         this.receiptStart = receipt_start;
         this.receiptEnd = receipt_end;
