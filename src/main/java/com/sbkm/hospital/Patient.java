@@ -1,10 +1,13 @@
 package com.sbkm.hospital;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity(name="Patient")
+@JsonIgnoreProperties({ "timetable", "patientRecords" })
 public class Patient {
     @Id
     @SequenceGenerator(
@@ -39,13 +42,24 @@ public class Patient {
             nullable = false,
             columnDefinition = "DATE"
     )
-    private LocalDate birth_date;
+    private LocalDate birthDate;
+
+    @OneToMany(mappedBy = "patient",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    //@JsonManagedReference
+    private List<AppointmentTable> appointmentTables;
+    @OneToMany(mappedBy = "patient",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    //@JsonManagedReference
+    private List<PatientRecord> patientRecords;
 
     public Patient(String name, String surname, String patronymic, LocalDate birth_date) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
-        this.birth_date = birth_date;
+        this.birthDate = birth_date;
     }
 
     public Patient() {
@@ -83,12 +97,28 @@ public class Patient {
         this.patronymic = patronymic;
     }
 
-    public LocalDate getBirth_date() {
-        return birth_date;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirth_date(LocalDate birth_date) {
-        this.birth_date = birth_date;
+    public void setBirthDate(LocalDate birth_date) {
+        this.birthDate = birth_date;
+    }
+
+    public List<AppointmentTable> getAppointmentTables() {
+        return appointmentTables;
+    }
+
+    public void setAppointmentTables(List<AppointmentTable> appointmentTables) {
+        this.appointmentTables = appointmentTables;
+    }
+
+    public List<PatientRecord> getPatientRecords() {
+        return patientRecords;
+    }
+
+    public void setPatientRecords(List<PatientRecord> patientRecords) {
+        this.patientRecords = patientRecords;
     }
 
     @Override
@@ -98,7 +128,7 @@ public class Patient {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", patronymic='" + patronymic + '\'' +
-                ", birth_date=" + birth_date +
+                ", birth_date=" + birthDate +
                 '}';
     }
 }

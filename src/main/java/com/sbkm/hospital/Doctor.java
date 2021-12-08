@@ -1,9 +1,12 @@
 package com.sbkm.hospital;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "Doctor")
+@JsonIgnoreProperties({ "timetable", "appointmentTables" })
 public class Doctor {
     @Id
             @SequenceGenerator(
@@ -47,7 +50,18 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<Timetable> timetable;
+    //@JsonManagedReference
+    private List<Timetable> timetables;
+    @OneToMany(mappedBy = "doctor",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    //@JsonManagedReference
+    private List<AppointmentTable> appointmentTables;
+    @OneToMany(mappedBy = "doctor",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    //@JsonManagedReference
+    private List<PatientRecord> patientRecords;
 
     public Doctor(String name, String surname, String patronymic, String specialization, String work_experiences) {
         this.name = name;
@@ -93,12 +107,12 @@ public class Doctor {
         this.patronymic = patronymic;
     }
 
-    public void setTimetable(List<Timetable> timetable) {
-        this.timetable = timetable;
+    public void setTimetables(List<Timetable> timetable) {
+        this.timetables = timetable;
     }
 
-    public List<Timetable> getTimetable() {
-        return timetable;
+    public List<Timetable> getTimetables() {
+        return timetables;
     }
 
     public String getSpecialization() {
@@ -115,6 +129,14 @@ public class Doctor {
 
     public void setWork_experiences(String work_experiences) {
         this.work_experiences = work_experiences;
+    }
+
+    public List<AppointmentTable> getAppointmentTables() {
+        return appointmentTables;
+    }
+
+    public void setAppointmentTables(List<AppointmentTable> appointmentTables) {
+        this.appointmentTables = appointmentTables;
     }
 
     @Override

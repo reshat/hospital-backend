@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface TimetableRepository extends JpaRepository<Timetable, Long> {
-    Iterable<Timetable> getSchedule (Long id);
+    Iterable<Calendar> getSchedule (Long id);
     @Transactional
     @Modifying
     void changeTime (Long doctorId, LocalDate dateOfReceipt, LocalTime receiptStart, LocalTime receiptEnd);
-    boolean existsByDoctorIdAndDateOfReceipt(Long doctor_id, LocalDate date_of_receipt);
-    boolean existsByDoctorIdAndDateOfReceiptAndReceiptStartLessThanEqualAndReceiptEndGreaterThanEqual(Long doctor_id, LocalDate date_of_receipt, LocalTime time_start, LocalTime time_end);
+    boolean existsByDoctorIdAndWorkDate(Long doctor_id, LocalDate date_of_receipt);
+    //boolean existsByDoctorIdAndDateOfReceiptAndReceiptStartLessThanEqualAndReceiptEndGreaterThanEqual(Long doctor_id, LocalDate date_of_receipt, LocalTime time_start, LocalTime time_end);
 }

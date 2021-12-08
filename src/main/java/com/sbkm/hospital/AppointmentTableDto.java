@@ -8,17 +8,15 @@ public class AppointmentTableDto {
     private Long doctor_id;
     private LocalDate date_of_receipt;
     private LocalTime time_of_receipt;
-    private LocalTime appointment_duration;
 
     public AppointmentTableDto() {
     }
 
-    public AppointmentTableDto(Long patient_id, Long doctor_id, LocalDate date_of_receipt, LocalTime time_of_receipt, LocalTime appointment_duration) {
+    public AppointmentTableDto(Long patient_id, Long doctor_id, LocalDate date_of_receipt, LocalTime time_of_receipt) {
         this.patient_id = patient_id;
         this.doctor_id = doctor_id;
         this.date_of_receipt = date_of_receipt;
         this.time_of_receipt = time_of_receipt;
-        this.appointment_duration = appointment_duration;
     }
 
     public Long getPatient_id() {
@@ -53,11 +51,4 @@ public class AppointmentTableDto {
         this.time_of_receipt = time_of_receipt;
     }
 
-    public LocalTime getAppointment_duration() {
-        return appointment_duration;
-    }
-
-    public void setAppointment_duration(LocalTime appointment_duration) {
-        this.appointment_duration = appointment_duration;
-    }
 }
