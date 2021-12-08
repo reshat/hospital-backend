@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
 
 @Service
 public class GeneralService {
@@ -25,6 +24,10 @@ public class GeneralService {
     private AppointmentTableRepository appointmentTableRepository;
     @Autowired
     private PatientRecordRepository patientRecordRepository;
+    @Autowired
+    private DoctorRepository doctorRepository;
+    @Autowired
+    private PatientRepository patientRepository;
     private static final String SQL_GET_SCHEDULE =
             "select doctor_id,surname,work_date,work_start,work_end " +
             "from Timetable " +
