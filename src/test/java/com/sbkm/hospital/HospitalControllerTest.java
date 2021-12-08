@@ -43,7 +43,6 @@ class HospitalControllerTest {
         ResultActions ra = mockMvc.perform(post("/signup")
                 .flashAttr("signUpDto", new SignUpDto("Олег","Тинькоф","Леонидович","admin","doctor@test.com","admin")));
         MvcResult mr = ra.andReturn();
-        //(mr.getResponse().getStatus()
         assertEquals(HttpStatus.OK, mr.getResponse().getStatus());
     }
 
@@ -53,13 +52,13 @@ class HospitalControllerTest {
                 .getForEntity("/doctors", String.class);
         assertEquals(200, result.getStatusCode());
     }
-//    @Test
-//    public void basicAuth() throws Exception {
-//        this.mockMvc
-//                .perform(get("/").header(HttpHeaders.AUTHORIZATION,
-//                        "Basic " + Base64Utils.encodeToString("admin:admin".getBytes())))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    public void basicAuth() throws Exception {
+        this.mockMvc
+                .perform(get("/login").header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("admin:admin".getBytes())))
+                .andExpect(status().isOk());
+    }
 //    @Test
 //    @WithMockUser(username = "test", password = "test", authorities = "DOCTOR")
 //    void patientRecord() throws Exception {
