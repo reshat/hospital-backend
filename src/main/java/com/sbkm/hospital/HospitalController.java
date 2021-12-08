@@ -11,8 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalTime;
 
 @RestController
 public class HospitalController {
@@ -23,8 +22,9 @@ public class HospitalController {
     private final PatientRepository patientRepository;
     private final PatientRecordRepository patientRecordRepository;
     private final AppointmentTableRepository appointmentTableRepository;
+    private final GeneralService generalService;
 
-    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository, AppointmentTableRepository appointmentTableRepository, UserDetailsServiceImp userDetailsServiceImp) {
+    HospitalController(DoctorRepository repository, UserRepository userRepository, TimetableRepository timetableRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository, PatientRecordRepository patientRecordRepository, AppointmentTableRepository appointmentTableRepository, UserDetailsServiceImp userDetailsServiceImp, GeneralService calendarService) {
         this.doctorRepository = repository;
         this.userRepository = userRepository;
         this.timetableRepository = timetableRepository;
@@ -32,6 +32,7 @@ public class HospitalController {
         this.patientRepository = patientRepository;
         this.patientRecordRepository = patientRecordRepository;
         this.appointmentTableRepository = appointmentTableRepository;
+        this.generalService = calendarService;
     }
 
     @GetMapping("/test")
@@ -108,21 +109,34 @@ public class HospitalController {
         }
 
         PatientRecord patientRecord = new PatientRecord();
-        patientRecord.setDoctor_id(patientRecordDto.getDoctor_id());
-        patientRecord.setPatient_id(patientRecordDto.getPatient_id());
-        patientRecord.setDate_of_receipt(patientRecordDto.getDate_of_receipt());
+        patientRecord.setDoctorId(patientRecordDto.getDoctor_id());
+        patientRecord.setPatientId(patientRecordDto.getPatient_id());
+        patientRecord.setDateOfReceipt(patientRecordDto.getDate_of_receipt());
         patientRecord.setRecord(patientRecordDto.getRecord());
         patientRecordRepository.save(patientRecord);
         return new ResponseEntity<>("Record added successfully", HttpStatus.OK);
-
     }
 
     @GetMapping("/calendar")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public @ResponseBody
-    Iterable<Timetable> getDoctorSchedule(@RequestParam String id) {
-        Iterable<Timetable> tt = timetableRepository.getSchedule(Long.valueOf(id));
+    Iterable<Calendar> getDoctorSchedule(@RequestParam String id) throws Exception {
+        if(!doctorRepository.existsById(Long.valueOf(id))){
+            throw new Exception("Unknown Doctor ID");
+        }
+        Iterable<Calendar> tt = generalService.getSchedule(Long.valueOf(id));
         return tt;
+    }
+
+    @GetMapping("/appointmentFreeSlots")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    Iterable<AppointmentFreeSlots> getAppointmentSlots(@RequestParam String id) throws Exception {
+        if(!doctorRepository.existsById(Long.valueOf(id))){
+            throw new Exception("Unknown Doctor ID");
+        }
+        Iterable<AppointmentFreeSlots> afs = generalService.getFreeSlots(Long.valueOf(id));
+        return afs;
     }
 
     @PostMapping("/makeAnAppointment")
@@ -139,21 +153,15 @@ public class HospitalController {
         if(appointmentTableRepository.countByPatientId(appointmentTableDto.getPatient_id()) >= 2){
             return new ResponseEntity<>("Reached maximum number of appointments", HttpStatus.BAD_REQUEST);
         }
-        if(!timetableRepository.existsByDoctorIdAndDateOfReceipt(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt())){
-            return new ResponseEntity<>("Incorrect date", HttpStatus.BAD_REQUEST);
+        if(!appointmentTableRepository.existsByDoctorIdAndDateOfReceiptAndTimeOfReceipt(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt(), appointmentTableDto.getTime_of_receipt())){
+            return new ResponseEntity<>("Incorrect time or date", HttpStatus.BAD_REQUEST);
         }
-        int hours = appointmentTableDto.getAppointment_duration().getHour();
-        int minutes = appointmentTableDto.getAppointment_duration().getMinute();
-        if(!timetableRepository.existsByDoctorIdAndDateOfReceiptAndReceiptStartLessThanEqualAndReceiptEndGreaterThanEqual(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt(), appointmentTableDto.getTime_of_receipt(), appointmentTableDto.getTime_of_receipt().plusHours(hours).plusMinutes(minutes))){
-            return new ResponseEntity<>("Incorrect time", HttpStatus.BAD_REQUEST);
-        }
-        AppointmentTable appointmentTable = new AppointmentTable();
-        appointmentTable.setDoctor_id(appointmentTableDto.getDoctor_id());
-        appointmentTable.setPatientId(appointmentTableDto.getPatient_id());
-        appointmentTable.setDate_of_receipt(appointmentTableDto.getDate_of_receipt());
-        appointmentTable.setTime_of_receipt(appointmentTableDto.getTime_of_receipt());
-        appointmentTable.setAppointment_duration(appointmentTableDto.getAppointment_duration());
-        appointmentTableRepository.save(appointmentTable);
+//        int hours = appointmentTableDto.getAppointment_duration().getHour();
+//        int minutes = appointmentTableDto.getAppointment_duration().getMinute();
+//        if(!appointmentTableRepository.existsByDoctorIdAndDateOfReceiptAndReceiptStartLessThanEqualAndReceiptEndGreaterThanEqual(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt(), appointmentTableDto.getTime_of_receipt(), appointmentTableDto.getTime_of_receipt().plusHours(hours).plusMinutes(minutes))){
+//            return new ResponseEntity<>("Incorrect time", HttpStatus.BAD_REQUEST);
+//        }
+        appointmentTableRepository.makeAnAppointment(appointmentTableDto.getPatient_id(), appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt(), appointmentTableDto.getTime_of_receipt());
         return new ResponseEntity<>("Appointment made successfully", HttpStatus.OK);
     }
   
@@ -161,15 +169,31 @@ public class HospitalController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAuthority('patient:read')")
     public @ResponseBody
-    Iterable<PatientRecord> getPatientRecord(@RequestParam String id) {
-        Iterable<PatientRecord> patientRecord = patientRecordRepository.viewRecords(Long.valueOf(id));
+    Iterable<ViewRecords> getPatientRecords(@RequestParam String id) throws Exception {
+        if(!patientRepository.existsById(Long.valueOf(id))){
+            throw new Exception("Unknown Patient ID");
+        }
+        Iterable<ViewRecords> patientRecord = generalService.viewRecords(Long.valueOf(id));
         return patientRecord;
     }
+
+    @GetMapping("/viewPatients")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PreAuthorize("hasAuthority('doctor:read')")
+    public @ResponseBody
+    Iterable<ViewPatients> getPatients(@RequestParam String id) throws Exception {
+        if(!doctorRepository.existsById(Long.valueOf(id))){
+            throw new Exception("Unknown Doctor ID");
+        }
+        Iterable<ViewPatients> patients = generalService.viewPatients(Long.valueOf(id));
+        return patients;
+    }
+
     @PostMapping("/changeTime")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAuthority('admin:write')")
     public ResponseEntity<?> changeTime(@ModelAttribute ChangeTimeDto changeTimeDto){
-        if(!timetableRepository.existsByDoctorIdAndDateOfReceipt(changeTimeDto.getDoctorId(), changeTimeDto.getDateOfReceipt())){
+        if(!timetableRepository.existsByDoctorIdAndWorkDate(changeTimeDto.getDoctorId(), changeTimeDto.getDateOfReceipt())){
             return new ResponseEntity<>("Incorrect date or doctor id", HttpStatus.BAD_REQUEST);
         }
         timetableRepository.changeTime(changeTimeDto.getDoctorId(), changeTimeDto.getDateOfReceipt(), changeTimeDto.getReceiptStart(), changeTimeDto.getReceiptEnd());

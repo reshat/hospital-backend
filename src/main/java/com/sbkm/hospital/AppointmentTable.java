@@ -5,12 +5,21 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity(name = "AppointmentTable")
-//@NamedQuery(name = "AppointmentTable.checkAppointments",
-//        query = "select count(patient_id) " +
-//                "from AppointmentTable " +
-//                "where doctor_id = ?1 " +
-//                " " +
-//                "group by doctor_id,surname_n_initials,date_of_receipt,receipt_start,receipt_end")
+@NamedQueries({
+        @NamedQuery(name = "AppointmentTable.getFreeSlots",
+                query = "select  timeOfReceipt " +
+                        "from AppointmentTable " +
+                        "where doctorId = ?1 " +
+                        "and patientId IS NULL " +
+                        "group by timeOfReceipt"),
+        @NamedQuery(name = "AppointmentTable.makeAnAppointment",
+                query = "update AppointmentTable " +
+                        "set patientId = ?1 " +
+                        "where doctorId = ?2 " +
+                        "and dateOfReceipt = ?3 " +
+                        "and timeOfReceipt = ?4")
+})
+
 public class AppointmentTable {
     @Id
     @SequenceGenerator(
@@ -24,45 +33,53 @@ public class AppointmentTable {
     )
     private Long id;
     @Column(
-            name = "patient_id",
-            nullable = false,
+            name = "patientId",
             columnDefinition = "BIGINT"
     )
     private Long patientId;
     @Column(
-            name = "doctor_id",
+            name = "doctorId",
             nullable = false,
             columnDefinition = "BIGINT"
     )
-    private Long doctor_id;
+    private Long doctorId;
     @Column(
-            name = "date",
+            name = "dateOfReceipt",
             nullable = false,
             columnDefinition = "DATE"
     )
-    private LocalDate date_of_receipt;
+    private LocalDate dateOfReceipt;
     @Column(
-            name = "time",
+            name = "timeOfReceipt",
             nullable = false,
             columnDefinition = "TIME"
     )
-    private LocalTime time_of_receipt;
+    private LocalTime timeOfReceipt;
     @Column(
             name = "duration",
             nullable = false,
             columnDefinition = "TIME"
     )
-    private LocalTime appointment_duration;
+    private LocalTime appointmentDuration;
+
+    @ManyToOne
+    @JoinColumn(name = "patientId", insertable = false, updatable = false)
+    //@JsonBackReference
+    private Patient patient;
+    @ManyToOne
+    @JoinColumn(name = "doctorId", insertable = false, updatable = false)
+    //@JsonBackReference
+    private Doctor doctor;
 
     public AppointmentTable() {
     }
 
-    public AppointmentTable(Long patient_id, Long doctor_id, LocalDate date_of_receipt, LocalTime time_of_receipt, LocalTime appointment_duration) {
-        this.patientId = patient_id;
-        this.doctor_id = doctor_id;
-        this.date_of_receipt = date_of_receipt;
-        this.time_of_receipt = time_of_receipt;
-        this.appointment_duration = appointment_duration;
+    public AppointmentTable(Long doctor_id, LocalDate date_of_receipt, LocalTime time_of_receipt, LocalTime appointment_duration) {
+        //this.patientId = patient_id;
+        this.doctorId = doctor_id;
+        this.dateOfReceipt = date_of_receipt;
+        this.timeOfReceipt = time_of_receipt;
+        this.appointmentDuration = appointment_duration;
     }
 
     public Long getId() {
@@ -81,35 +98,63 @@ public class AppointmentTable {
         this.patientId = patient_id;
     }
 
-    public Long getDoctor_id() {
-        return doctor_id;
+    public Long getDoctorId() {
+        return doctorId;
     }
 
-    public void setDoctor_id(Long doctor_id) {
-        this.doctor_id = doctor_id;
+    public void setDoctorId(Long doctor_id) {
+        this.doctorId = doctor_id;
     }
 
-    public LocalDate getDate_of_receipt() {
-        return date_of_receipt;
+    public LocalDate getDateOfReceipt() {
+        return dateOfReceipt;
     }
 
-    public void setDate_of_receipt(LocalDate date_of_receipt) {
-        this.date_of_receipt = date_of_receipt;
+    public void setDateOfReceipt(LocalDate date_of_receipt) {
+        this.dateOfReceipt = date_of_receipt;
     }
 
-    public LocalTime getTime_of_receipt() {
-        return time_of_receipt;
+    public LocalTime getTimeOfReceipt() {
+        return timeOfReceipt;
     }
 
-    public void setTime_of_receipt(LocalTime time_of_receipt) {
-        this.time_of_receipt = time_of_receipt;
+    public void setTimeOfReceipt(LocalTime time_of_receipt) {
+        this.timeOfReceipt = time_of_receipt;
     }
 
-    public LocalTime getAppointment_duration() {
-        return appointment_duration;
+    public LocalTime getAppointmentDuration() {
+        return appointmentDuration;
     }
 
-    public void setAppointment_duration(LocalTime appointment_duration) {
-        this.appointment_duration = appointment_duration;
+    public void setAppointmentDuration(LocalTime appointment_duration) {
+        this.appointmentDuration = appointment_duration;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    @Override
+    public String toString() {
+        return "AppointmentTable{" +
+                "id=" + id +
+                ", patientId=" + patientId +
+                ", doctor_id=" + doctorId +
+                ", date_of_receipt=" + dateOfReceipt +
+                ", time_of_receipt=" + timeOfReceipt +
+                ", appointment_duration=" + appointmentDuration +
+                '}';
     }
 }

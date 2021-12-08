@@ -2,15 +2,22 @@ package com.sbkm.hospital;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Entity(name="PatientRecord")
-@NamedQuery(name = "PatientRecord.viewRecords",
-        query = "select d.name,d.surname,d.patronymic,pr.date_of_receipt,pr.record " +
+@NamedQueries({
+        @NamedQuery(name = "PatientRecord.viewRecords",
+        query = "select d.name, d.surname, d.patronymic, pr.dateOfReceipt, pr.record " +
                 "from PatientRecord pr " +
-                "left join Doctor d on d.id = pr.doctor_id " +
-                "where pr.patient_id = ?1 " +
-                "group by d.name,d.surname,d.patronymic,pr.date_of_receipt,pr.record")
+                "left join Doctor d on d.id = pr.doctorId " +
+                "where pr.patientId = ?1 " +
+                "group by d.name,d.surname,d.patronymic,pr.dateOfReceipt,pr.record "),
+        @NamedQuery(name = "PatientRecord.viewPatients",
+        query = "select p.name, p.surname, p.patronymic " +
+                "from PatientRecord pr " +
+                "left join Patient p on p.id = pr.patientId " +
+                "where pr.doctorId = ?1 " +
+                "group by p.name, p.surname, p.patronymic")
+})
 public class PatientRecord {
     @Id
     @SequenceGenerator(
@@ -24,36 +31,45 @@ public class PatientRecord {
     )
     private Long id;
     @Column(
-            name = "patient_id",
+            name = "patientId",
             nullable = false,
             columnDefinition = "BIGINT"
     )
-    private Long patient_id;
+    private Long patientId;
     @Column(
-            name = "doctor_id",
+            name = "doctorId",
             nullable = false,
             columnDefinition = "BIGINT"
     )
-    private Long doctor_id;
+    private Long doctorId;
     @Column(
-            name = "date",
+            name = "dateOfReceipt",
             nullable = false,
             columnDefinition = "DATE"
     )
-    private LocalDate date_of_receipt;
+    private LocalDate dateOfReceipt;
     @Column(
             name = "record",
             columnDefinition = "TEXT"
     )
     private String record;
 
+    @ManyToOne
+    @JoinColumn(name = "patientId", insertable = false, updatable = false)
+    //@JsonBackReference
+    private Patient patient;
+    @ManyToOne
+    @JoinColumn(name = "doctorId", insertable = false, updatable = false)
+    //@JsonBackReference
+    private Doctor doctor;
+
     public PatientRecord() {
     }
 
     public PatientRecord(Long patient_id, Long doctor_id, LocalDate date_of_receipt, String record) {
-        this.patient_id = patient_id;
-        this.doctor_id = doctor_id;
-        this.date_of_receipt = date_of_receipt;
+        this.patientId = patient_id;
+        this.doctorId = doctor_id;
+        this.dateOfReceipt = date_of_receipt;
         this.record = record;
     }
 
@@ -65,28 +81,28 @@ public class PatientRecord {
         this.id = id;
     }
 
-    public Long getPatient_id() {
-        return patient_id;
+    public Long getPatientId() {
+        return patientId;
     }
 
-    public void setPatient_id(Long patient_id) {
-        this.patient_id = patient_id;
+    public void setPatientId(Long patient_id) {
+        this.patientId = patient_id;
     }
 
-    public Long getDoctor_id() {
-        return doctor_id;
+    public Long getDoctorId() {
+        return doctorId;
     }
 
-    public void setDoctor_id(Long doctor_id) {
-        this.doctor_id = doctor_id;
+    public void setDoctorId(Long doctor_id) {
+        this.doctorId = doctor_id;
     }
 
-    public LocalDate getDate_of_receipt() {
-        return date_of_receipt;
+    public LocalDate getDateOfReceipt() {
+        return dateOfReceipt;
     }
 
-    public void setDate_of_receipt(LocalDate date_of_receipt) {
-        this.date_of_receipt = date_of_receipt;
+    public void setDateOfReceipt(LocalDate date_of_receipt) {
+        this.dateOfReceipt = date_of_receipt;
     }
 
     public String getRecord() {
