@@ -5,14 +5,14 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class TimetableID implements Serializable {
-    private Long doctorId;
+    private Long doctor_id;
     private LocalDate workDate;
 
     public TimetableID() {
     }
 
     public TimetableID(Long doctor_id, LocalDate date_of_receipt) {
-        this.doctorId = doctor_id;
+        this.doctor_id = doctor_id;
         this.workDate = date_of_receipt;
     }
 
@@ -21,11 +21,11 @@ public class TimetableID implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TimetableID that = (TimetableID) o;
-        return doctorId.equals(that.doctorId) && workDate.equals(that.workDate);
+        return doctor_id.equals(that.doctor_id) && workDate.equals(that.workDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(doctorId, workDate);
+        return Objects.hash(doctor_id, workDate);
     }
 }

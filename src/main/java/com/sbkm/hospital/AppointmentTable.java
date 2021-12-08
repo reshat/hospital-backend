@@ -33,24 +33,24 @@ public class AppointmentTable {
     )
     private Long id;
     @Column(
-            name = "patientId",
+            name = "patient_id",
             columnDefinition = "BIGINT"
     )
     private Long patientId;
     @Column(
-            name = "doctorId",
+            name = "doctor_id",
             nullable = false,
             columnDefinition = "BIGINT"
     )
     private Long doctorId;
     @Column(
-            name = "dateOfReceipt",
+            name = "date_of_receipt",
             nullable = false,
             columnDefinition = "DATE"
     )
     private LocalDate dateOfReceipt;
     @Column(
-            name = "timeOfReceipt",
+            name = "time_of_receipt",
             nullable = false,
             columnDefinition = "TIME"
     )
@@ -63,13 +63,17 @@ public class AppointmentTable {
     private LocalTime appointmentDuration;
 
     @ManyToOne
-    @JoinColumn(name = "patientId", insertable = false, updatable = false)
+    @JoinColumn(name = "patient_id", insertable = false, updatable = false)
     //@JsonBackReference
     private Patient patient;
-    @ManyToOne
-    @JoinColumn(name = "doctorId", insertable = false, updatable = false)
-    //@JsonBackReference
-    private Doctor doctor;
+//    @ManyToOne
+//    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
+//    //@JsonBackReference
+//    private Timetable doctor;
+//    @ManyToOne
+//    @JoinColumn(name = "work_date", insertable = false, updatable = false)
+//    //@JsonBackReference
+//    private Timetable workDate;
 
     public AppointmentTable() {
     }
@@ -136,14 +140,6 @@ public class AppointmentTable {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
-    }
-
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
     }
 
     @Override

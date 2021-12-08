@@ -31,19 +31,19 @@ public class PatientRecord {
     )
     private Long id;
     @Column(
-            name = "patientId",
+            name = "patient_id",
             nullable = false,
             columnDefinition = "BIGINT"
     )
     private Long patientId;
     @Column(
-            name = "doctorId",
+            name = "doctor_id",
             nullable = false,
             columnDefinition = "BIGINT"
     )
     private Long doctorId;
     @Column(
-            name = "dateOfReceipt",
+            name = "date_of_receipt",
             nullable = false,
             columnDefinition = "DATE"
     )
@@ -55,11 +55,11 @@ public class PatientRecord {
     private String record;
 
     @ManyToOne
-    @JoinColumn(name = "patientId", insertable = false, updatable = false)
+    @JoinColumn(name = "patient_id", insertable = false, updatable = false)
     //@JsonBackReference
     private Patient patient;
     @ManyToOne
-    @JoinColumn(name = "doctorId", insertable = false, updatable = false)
+    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
     //@JsonBackReference
     private Doctor doctor;
 

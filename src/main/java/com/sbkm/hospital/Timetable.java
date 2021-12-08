@@ -5,27 +5,28 @@ package com.sbkm.hospital;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "Timetable")
 @IdClass(TimetableID.class)
 @NamedQueries({
         @NamedQuery(name = "Timetable.getSchedule",
-                query = "select doctorId,surnameNInitials,workDate,workStart,workEnd " +
+                query = "select doctor_id,surnameNInitials,workDate,workStart,workEnd " +
                         "from Timetable " +
-                        "where doctorId = ?1 " +
+                        "where doctor_id = ?1 " +
                         "and workDate >= current_date " +
                         "and workDate <= (current_date + 14 - CAST ((extract(isodow from current_date)) as integer)) " +
-                        "group by doctorId,surnameNInitials,workDate,workStart,workEnd"),
+                        "group by doctor_id,surnameNInitials,workDate,workStart,workEnd"),
         @NamedQuery(name = "Timetable.changeTime",
                 query = "update Timetable " +
                         "set workStart = ?3, workEnd = ?4 " +
-                        "where doctorId = ?1 " +
+                        "where doctor_id = ?1 " +
                         "and date = ?2")
 })
 public class Timetable {
     @Id
-    private Long doctorId;
+    private Long doctor_id;
     @Column(
             name = "surname",
             nullable = false,
@@ -53,15 +54,25 @@ public class Timetable {
     private LocalTime workEnd;
 
     @ManyToOne
-    @JoinColumn(name = "doctorId", insertable = false, updatable = false)
+    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
     //@JsonBackReference
     private Doctor doctor;
+//    @OneToMany(mappedBy = "workDate",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    //@JsonManagedReference
+//    private List<AppointmentTable> appointmentDates;
+//    @OneToMany(mappedBy = "doctor",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    //@JsonManagedReference
+//    private List<AppointmentTable> appointmentDoctors;
 
     public Timetable() {
     }
 
     public Timetable(Long doctor_id, String surname, String name, String patronymic, LocalDate date_of_receipt, LocalTime receipt_start, LocalTime receipt_end) {
-        this.doctorId = doctor_id;
+        this.doctor_id = doctor_id;
         this.surnameNInitials = surname
                 + " " + name.charAt(0);
         if(!Objects.equals(patronymic, ""))
@@ -73,12 +84,12 @@ public class Timetable {
 
     }
 
-    public Long getDoctorId() {
-        return doctorId;
+    public Long getDoctor_id() {
+        return doctor_id;
     }
 
-    public void setDoctorId(Long doctor_id) {
-        this.doctorId = doctor_id;
+    public void setDoctor_id(Long doctor_id) {
+        this.doctor_id = doctor_id;
     }
 
     public String getSurnameNInitials() {return surnameNInitials;}
@@ -122,7 +133,7 @@ public class Timetable {
     @Override
     public String toString() {
         return "Timetable{" +
-                "doctorId=" + doctorId +
+                "doctorId=" + doctor_id +
                 ", surnameNInitials='" + surnameNInitials + '\'' +
                 ", workDate=" + workDate +
                 ", workStart=" + workStart +

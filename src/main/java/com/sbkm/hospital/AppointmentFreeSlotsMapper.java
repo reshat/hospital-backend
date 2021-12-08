@@ -11,7 +11,7 @@ public class AppointmentFreeSlotsMapper implements RowMapper<AppointmentFreeSlot
     @Override
     public AppointmentFreeSlots mapRow(ResultSet rs, int rowNum) throws SQLException {
         AppointmentFreeSlots appointmentFreeSlots = new AppointmentFreeSlots();
-        appointmentFreeSlots.setTimeOfReceipt("timeOfReceipt");
+        appointmentFreeSlots.setTimeOfReceipt(rs.getString("time_of_receipt"));
         return appointmentFreeSlots;
     }
 }

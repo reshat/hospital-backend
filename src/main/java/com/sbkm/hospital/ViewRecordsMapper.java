@@ -14,7 +14,7 @@ public class ViewRecordsMapper implements RowMapper<ViewRecords> {
         viewRecords.setName(rs.getString("name"));
         viewRecords.setSurname(rs.getString("surname"));
         viewRecords.setPatronymic(rs.getString("patronymic"));
-        viewRecords.setDateOfReceipt(rs.getString("dateOfReceipt"));
+        viewRecords.setDateOfReceipt(rs.getString("date_of_receipt"));
         viewRecords.setRecord(rs.getString("record"));
         return viewRecords;
     }
