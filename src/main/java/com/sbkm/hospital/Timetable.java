@@ -1,75 +1,101 @@
 package com.sbkm.hospital;
 
+
+
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "Timetable")
+@IdClass(TimetableID.class)
+@NamedQueries({
+        @NamedQuery(name = "Timetable.getSchedule",
+                query = "select doctor_id,surnameNInitials,workDate,workStart,workEnd " +
+                        "from Timetable " +
+                        "where doctor_id = ?1 " +
+                        "and workDate >= current_date " +
+                        "and workDate <= (current_date + 14 - CAST ((extract(isodow from current_date)) as integer)) " +
+                        "group by doctor_id,surnameNInitials,workDate,workStart,workEnd"),
+        @NamedQuery(name = "Timetable.changeTime",
+                query = "update Timetable " +
+                        "set workStart = ?3, workEnd = ?4 " +
+                        "where doctor_id = ?1 " +
+                        "and date = ?2")
+})
 public class Timetable {
     @Id
-    @Column(name = "doctor_id")
-    private Long id;
+    private Long doctor_id;
     @Column(
             name = "surname",
             nullable = false,
             columnDefinition = "TEXT"
     )
-    private String surname_n_initials;
+    private String surnameNInitials;
+    @Id
     @Column(
-            name = "date",
+            name = "work_date",
             nullable = false,
             columnDefinition = "DATE"
     )
-    private java.util.Date date_of_receipt;
+    private LocalDate workDate;
     @Column(
-            name = "receipt_start",
+            name = "work_start",
             nullable = false,
             columnDefinition = "TIME"
     )
-    private java.util.Date receipt_start;
+    private LocalTime workStart;
     @Column(
-            name = "receipt_end",
+            name = "work_end",
             nullable = false,
             columnDefinition = "TIME"
     )
-    private java.util.Date receipt_end;
+    private LocalTime workEnd;
 
-    @OneToOne
-    @MapsId
-    //@JoinColumn(name = "doctor_id")
+    @ManyToOne
+    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
+    //@JsonBackReference
     private Doctor doctor;
+//    @OneToMany(mappedBy = "workDate",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    //@JsonManagedReference
+//    private List<AppointmentTable> appointmentDates;
+//    @OneToMany(mappedBy = "doctor",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    //@JsonManagedReference
+//    private List<AppointmentTable> appointmentDoctors;
 
     public Timetable() {
     }
 
-    public Timetable(Doctor doctor, Date date_of_receipt, Date receipt_start, Date receipt_end) {
-        this.id = doctor.getId();
-        this.doctor = doctor;
-        this.surname_n_initials = doctor.getSurname()
-                + " " + doctor.getName().charAt(0);
-        if(!Objects.equals(doctor.getPatronymic(), ""))
-        this.surname_n_initials += "." + doctor.getPatronymic().charAt(0)
-                + ".";
-        this.date_of_receipt = date_of_receipt;
-        this.receipt_start = receipt_start;
-        this.receipt_end = receipt_end;
+    public Timetable(Long doctor_id, String surname, String name, String patronymic, LocalDate date_of_receipt, LocalTime receipt_start, LocalTime receipt_end) {
+        this.doctor_id = doctor_id;
+        this.surnameNInitials = surname
+                + " " + name.charAt(0);
+        if(!Objects.equals(patronymic, ""))
+            this.surnameNInitials += "." + patronymic.charAt(0)
+                    + ".";
+        this.workDate = date_of_receipt;
+        this.workStart = receipt_start;
+        this.workEnd = receipt_end;
 
     }
 
-    public Long getId() {
-        return id;
+    public Long getDoctor_id() {
+        return doctor_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setDoctor_id(Long doctor_id) {
+        this.doctor_id = doctor_id;
     }
 
-    public String getSurname_n_initials() {
-        return surname_n_initials;
-    }
+    public String getSurnameNInitials() {return surnameNInitials;}
 
-    public void setSurname_n_initials(String surname_n_initials) {
-        this.surname_n_initials = surname_n_initials;
+    public void setSurnameNInitials(String surname_n_initials) {
+        this.surnameNInitials = surname_n_initials;
     }
 
     public Doctor getDoctor() {
@@ -80,38 +106,38 @@ public class Timetable {
         this.doctor = doctor;
     }
 
-    public Date getDate_of_receipt() {
-        return date_of_receipt;
+    public LocalDate getWorkDate() {
+        return workDate;
     }
 
-    public void setDate_of_receipt(Date date_of_receipt) {
-        this.date_of_receipt = date_of_receipt;
+    public void setWorkDate(LocalDate date_of_receipt) {
+        this.workDate = date_of_receipt;
     }
 
-    public Date getReceipt_start() {
-        return receipt_start;
+    public LocalTime getWorkStart() {
+        return workStart;
     }
 
-    public void setReceipt_start(Date receipt_start) {
-        this.receipt_start = receipt_start;
+    public void setWorkStart(LocalTime receipt_start) {
+        this.workStart = receipt_start;
     }
 
-    public Date getReceipt_end() {
-        return receipt_end;
+    public LocalTime getWorkEnd() {
+        return workEnd;
     }
 
-    public void setReceipt_end(Date receipt_end) {
-        this.receipt_end = receipt_end;
+    public void setWorkEnd(LocalTime receipt_end) {
+        this.workEnd = receipt_end;
     }
 
     @Override
     public String toString() {
         return "Timetable{" +
-                "id=" + id +
-                ", surname_n_initials='" + surname_n_initials + '\'' +
-                ", date_of_receipt=" + date_of_receipt +
-                ", receipt_start=" + receipt_start +
-                ", receipt_end=" + receipt_end +
+                "doctorId=" + doctor_id +
+                ", surnameNInitials='" + surnameNInitials + '\'' +
+                ", workDate=" + workDate +
+                ", workStart=" + workStart +
+                ", workEnd=" + workEnd +
                 '}';
     }
 }
