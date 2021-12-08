@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "Doctor")
-@JsonIgnoreProperties({ "timetable", "appointmentTables" })
+@JsonIgnoreProperties({ "timetables", "appointmentTables", "patientRecords" })
 public class Doctor {
     @Id
             @SequenceGenerator(
@@ -137,6 +137,14 @@ public class Doctor {
 
     public void setAppointmentTables(List<AppointmentTable> appointmentTables) {
         this.appointmentTables = appointmentTables;
+    }
+
+    public List<PatientRecord> getPatientRecords() {
+        return patientRecords;
+    }
+
+    public void setPatientRecords(List<PatientRecord> patientRecords) {
+        this.patientRecords = patientRecords;
     }
 
     @Override

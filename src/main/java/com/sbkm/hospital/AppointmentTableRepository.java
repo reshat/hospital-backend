@@ -9,7 +9,7 @@ import java.time.LocalTime;
 
 public interface AppointmentTableRepository extends JpaRepository<AppointmentTable, Long> {
     Long countByPatientId(Long patientId);
-    Iterable<LocalTime> getFreeSlots(Long doctor_id);
+    Iterable<AppointmentFreeSlots> getFreeSlots(Long doctor_id);
     @Transactional
     @Modifying
     void makeAnAppointment (Long patient_id, Long doctor_id, LocalDate date_of_receipt, LocalTime time_of_receipt);
