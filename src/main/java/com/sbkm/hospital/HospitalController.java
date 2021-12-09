@@ -90,7 +90,13 @@ public class HospitalController {
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
         user.setRole(Role.PATIENT);
 
+        Patient patient = new Patient();
+        patient.setName(signUpDto.getName());
+        patient.setSurname(signUpDto.getSurname());
+        patient.setPatronymic(signUpDto.getPatronymic());
+
         userRepository.save(user);
+        patientRepository.save(patient);
 
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
 

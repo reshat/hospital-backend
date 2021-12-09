@@ -39,7 +39,6 @@ public class Patient {
     private String patronymic;
     @Column(
             name="birth_date",
-            nullable = false,
             columnDefinition = "DATE"
     )
     private LocalDate birthDate;
