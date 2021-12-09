@@ -8,6 +8,10 @@ import java.util.List;
 
 @Entity(name="Patient")
 @JsonIgnoreProperties({ "timetable", "patientRecords" })
+@NamedQuery(name = "Patient.changeInfo",
+query = "update Patient "+
+        "set name = ?2, surname = ?3, patronymic = ?4, birth_date = ?5 " +
+        "where id = ?1 ")
 public class Patient {
     @Id
     @SequenceGenerator(

@@ -104,6 +104,18 @@ public class HospitalController {
 
     }
 
+    @PostMapping("/changeInfo")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PreAuthorize("hasAuthority('patient:write')")
+    @ResponseBody
+    public ResponseEntity<?> changeInfo(@ModelAttribute PatientDto patientDto){
+        if(!patientRepository.existsById(patientDto.getPatient_id())){
+            return new ResponseEntity<>("Unknown Patient ID", HttpStatus.BAD_REQUEST);
+        }
+        patientRepository.changeInfo(patientDto.getPatient_id(), patientDto.getName(), patientDto.getSurname(), patientDto.getPatronymic(), patientDto.getBirthDate());
+        return new ResponseEntity<>("Info successfully changed", HttpStatus.OK);
+    }
+
     @PostMapping("/patientRecord")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAuthority('doctor:write')")
