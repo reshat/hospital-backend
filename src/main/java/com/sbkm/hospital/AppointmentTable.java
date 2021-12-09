@@ -10,6 +10,7 @@ import java.time.LocalTime;
                 query = "select  timeOfReceipt " +
                         "from AppointmentTable " +
                         "where doctorId = ?1 " +
+                        "and dateOfReceipt = ?2 " +
                         "and patientId IS NULL " +
                         "group by timeOfReceipt"),
         @NamedQuery(name = "AppointmentTable.makeAnAppointment",

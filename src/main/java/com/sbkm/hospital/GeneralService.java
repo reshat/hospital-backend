@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 
 @Service
 public class GeneralService {
@@ -42,6 +44,7 @@ public class GeneralService {
                     "select  time_of_receipt " +
                     "from Appointment_Table " +
                     "where doctor_id = :doctor_id " +
+                    "and date_of_receipt = :date " +
                     "and patient_id IS NULL " +
                     "group by time_of_receipt";
     private static final String SQL_VIEW_RECORDS =
@@ -59,8 +62,8 @@ public class GeneralService {
     public Iterable<Calendar> getSchedule(Long doctor_id){
         return jdbcTemplate.query(SQL_GET_SCHEDULE, new MapSqlParameterSource().addValue("doctor_id", doctor_id), calendarMapper);
     }
-    public Iterable<AppointmentFreeSlots> getFreeSlots(Long doctor_id){
-        return jdbcTemplate.query(SQL_GET_FREE_SLOTS, new MapSqlParameterSource().addValue("doctor_id", doctor_id), appointmentFreeSlotsMapper);
+    public Iterable<AppointmentFreeSlots> getFreeSlots(Long doctor_id, LocalDate date){
+        return jdbcTemplate.query(SQL_GET_FREE_SLOTS, new MapSqlParameterSource().addValue("doctor_id", doctor_id).addValue("date", date), appointmentFreeSlotsMapper);
     }
     public Iterable<ViewRecords> viewRecords(Long patient_id){
         return jdbcTemplate.query(SQL_VIEW_RECORDS, new MapSqlParameterSource().addValue("patient_id", patient_id), viewRecordsMapper);

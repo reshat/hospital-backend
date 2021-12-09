@@ -147,14 +147,14 @@ public class HospitalController {
         return tt;
     }
 
-    @GetMapping("/appointmentFreeSlots")
+    @PostMapping("/appointmentFreeSlots")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public @ResponseBody
-    Iterable<AppointmentFreeSlots> getAppointmentSlots(@RequestParam String id) throws Exception {
-        if(!doctorRepository.existsById(Long.valueOf(id))){
+    Iterable<AppointmentFreeSlots> getAppointmentSlots(@ModelAttribute AppointmentFreeSlotsDto appointmentFreeSlotsDto) throws Exception {
+        if(!doctorRepository.existsById(appointmentFreeSlotsDto.getId())){
             throw new Exception("Unknown Doctor ID");
         }
-        Iterable<AppointmentFreeSlots> afs = generalService.getFreeSlots(Long.valueOf(id));
+        Iterable<AppointmentFreeSlots> afs = generalService.getFreeSlots(appointmentFreeSlotsDto.getId(), appointmentFreeSlotsDto.getDate());
         return afs;
     }
 
