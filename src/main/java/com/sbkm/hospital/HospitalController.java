@@ -154,6 +154,9 @@ public class HospitalController {
         if(!doctorRepository.existsById(appointmentFreeSlotsDto.getId())){
             throw new Exception("Unknown Doctor ID");
         }
+        if(!timetableRepository.existsByDoctorIdAndWorkDate(appointmentFreeSlotsDto.getId(), appointmentFreeSlotsDto.getDate())){
+            throw new Exception("Incorrect date or doctor id");
+        }
         Iterable<AppointmentFreeSlots> afs = generalService.getFreeSlots(appointmentFreeSlotsDto.getId(), appointmentFreeSlotsDto.getDate());
         return afs;
     }

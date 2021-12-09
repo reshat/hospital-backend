@@ -43,11 +43,11 @@ public class Doctor {
             orphanRemoval = true)
     //@JsonManagedReference
     private List<Timetable> timetables;
-    @OneToMany(mappedBy = "doctor",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    //@JsonManagedReference
-    private List<PatientRecord> patientRecords;
+//    @OneToMany(mappedBy = "doctor",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    //@JsonManagedReference
+//    private List<PatientRecord> patientRecords;
 
     public Doctor(User user, String specialization, String work_experiences) {
         this.id = user.getId();
@@ -116,14 +116,6 @@ public class Doctor {
 
     public void setWork_experiences(String work_experiences) {
         this.work_experiences = work_experiences;
-    }
-
-    public List<PatientRecord> getPatientRecords() {
-        return patientRecords;
-    }
-
-    public void setPatientRecords(List<PatientRecord> patientRecords) {
-        this.patientRecords = patientRecords;
     }
 
     @Override

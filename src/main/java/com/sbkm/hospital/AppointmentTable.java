@@ -67,14 +67,13 @@ public class AppointmentTable {
     @JoinColumn(name = "patient_id", insertable = false, updatable = false)
     //@JsonBackReference
     private Patient patient;
-//    @ManyToOne
-//    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
-//    //@JsonBackReference
-//    private Timetable doctor;
-//    @ManyToOne
-//    @JoinColumn(name = "work_date", insertable = false, updatable = false)
-//    //@JsonBackReference
-//    private Timetable workDate;
+    @ManyToOne
+    @JoinColumns({
+    @JoinColumn(name = "doctor_id", referencedColumnName="doctor_id", insertable = false, updatable = false),
+    @JoinColumn(name = "date_of_receipt", referencedColumnName="work_date", insertable = false, updatable = false)
+    })
+    //@JsonBackReference
+    private Timetable timetableId;
 
     public AppointmentTable() {
     }
@@ -141,6 +140,14 @@ public class AppointmentTable {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    public Timetable getTimetableId() {
+        return timetableId;
+    }
+
+    public void setTimetableId(Timetable workDate) {
+        this.timetableId = workDate;
     }
 
     @Override

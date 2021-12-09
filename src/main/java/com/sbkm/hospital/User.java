@@ -43,6 +43,7 @@ public class User {
     @Column(
             name = "email",
             nullable = false,
+            unique = true,
             columnDefinition = "TEXT"
     )
     private String email;

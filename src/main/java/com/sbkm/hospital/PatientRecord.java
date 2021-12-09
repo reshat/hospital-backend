@@ -59,9 +59,12 @@ public class PatientRecord {
     //@JsonBackReference
     private Patient patient;
     @ManyToOne
-    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
+    @JoinColumns({
+            @JoinColumn(name = "doctor_id", referencedColumnName="doctor_id", insertable = false, updatable = false),
+            @JoinColumn(name = "date_of_receipt", referencedColumnName="work_date", insertable = false, updatable = false)
+    })
     //@JsonBackReference
-    private Doctor doctor;
+    private Timetable timetableId;
 
     public PatientRecord() {
     }
@@ -111,5 +114,32 @@ public class PatientRecord {
 
     public void setRecord(String record) {
         this.record = record;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Timetable getTimetableId() {
+        return timetableId;
+    }
+
+    public void setTimetableId(Timetable workDate) {
+        this.timetableId = workDate;
+    }
+
+    @Override
+    public String toString() {
+        return "PatientRecord{" +
+                "id=" + id +
+                ", patientId=" + patientId +
+                ", doctorId=" + doctorId +
+                ", dateOfReceipt=" + dateOfReceipt +
+                ", record='" + record + '\'' +
+                '}';
     }
 }
