@@ -9,15 +9,6 @@ import java.util.List;
 @JsonIgnoreProperties({ "timetables", "appointmentTables", "patientRecords" })
 public class Doctor {
     @Id
-            @SequenceGenerator(
-                    name = "doctor_sequence",
-                    sequenceName = "doctor_sequence",
-                    allocationSize = 1
-            )
-            @GeneratedValue(
-                    strategy = GenerationType.SEQUENCE,
-                    generator = "doctor_sequence"
-            )
     private Long id;
     @Column(
             name = "name",
@@ -58,7 +49,8 @@ public class Doctor {
     //@JsonManagedReference
     private List<PatientRecord> patientRecords;
 
-    public Doctor(String name, String surname, String patronymic, String specialization, String work_experiences) {
+    public Doctor(User user, String name, String surname, String patronymic, String specialization, String work_experiences) {
+        this.id = user.getId();
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
