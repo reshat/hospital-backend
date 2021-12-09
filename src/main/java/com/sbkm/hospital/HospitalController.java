@@ -90,6 +90,7 @@ public class HospitalController {
         user.setRole(Role.PATIENT);
 
         Patient patient = new Patient();
+        patient.setId(user.getId());
         patient.setName(signUpDto.getName());
         patient.setSurname(signUpDto.getSurname());
         patient.setPatronymic(signUpDto.getPatronymic());

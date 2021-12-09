@@ -14,15 +14,6 @@ query = "update Patient "+
         "where id = ?1 ")
 public class Patient {
     @Id
-    @SequenceGenerator(
-            name = "patient_sequence",
-            sequenceName = "patient_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "patient_sequence"
-    )
     private Long id;
     @Column(
             name = "name",
@@ -58,7 +49,8 @@ public class Patient {
     //@JsonManagedReference
     private List<PatientRecord> patientRecords;
 
-    public Patient(String name, String surname, String patronymic, LocalDate birth_date) {
+    public Patient(User user, String name, String surname, String patronymic, LocalDate birth_date) {
+        this.id = user.getId();
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
