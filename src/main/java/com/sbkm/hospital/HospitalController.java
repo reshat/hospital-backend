@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.time.LocalTime;
 
 @RestController
@@ -53,6 +54,7 @@ public class HospitalController {
         User user = userRepository.findByLogin(auth.getName()).orElse(new User());
         return user;
     }
+  
     @GetMapping("/general")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     String general() throws JsonProcessingException {
