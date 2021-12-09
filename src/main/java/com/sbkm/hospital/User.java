@@ -19,26 +19,26 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(
-            name = "name",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
-    private String name;
-
-    @Column(
-            name = "surname",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
-    private String surname;
-
-    @Column(
-            name = "patronymic",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
-    private String patronymic;
+//    @Column(
+//            name = "name",
+//            nullable = false,
+//            columnDefinition = "TEXT"
+//    )
+//    private String name;
+//
+//    @Column(
+//            name = "surname",
+//            nullable = false,
+//            columnDefinition = "TEXT"
+//    )
+//    private String surname;
+//
+//    @Column(
+//            name = "patronymic",
+//            nullable = false,
+//            columnDefinition = "TEXT"
+//    )
+//    private String patronymic;
 
     @Column(
             name = "email",
@@ -48,42 +48,42 @@ public class User {
     )
     private String email;
 
-    public User(String login, String password, Role role, String name, String surname, String patronymic, String email) {
+    public User(String login, String password, Role role, String email) {
         this.login = login;
         this.password = password;
         this.role = role;
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
+//        this.name = name;
+//        this.surname = surname;
+//        this.patronymic = patronymic;
         this.email = email;
     }
 
     public User() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getPatronymic() {
-        return patronymic;
-    }
-
-    public void setPatronymic(String patronymic) {
-        this.patronymic = patronymic;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public String getSurname() {
+//        return surname;
+//    }
+//
+//    public void setSurname(String surname) {
+//        this.surname = surname;
+//    }
+//
+//    public String getPatronymic() {
+//        return patronymic;
+//    }
+//
+//    public void setPatronymic(String patronymic) {
+//        this.patronymic = patronymic;
+//    }
 
     public String getEmail() {
         return email;

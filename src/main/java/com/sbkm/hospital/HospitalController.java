@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 public class HospitalController {
     private final DoctorRepository doctorRepository;
@@ -43,13 +45,34 @@ public class HospitalController {
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public @ResponseBody
-    User getAuthUser() {
+    UserInfo getAuthUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             return null;
         }
+
         User user = userRepository.findByLogin(auth.getName()).orElse(new User());
-        return user;
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(user.getId());
+        userInfo.setLogin(user.getLogin());
+        userInfo.setPassword(user.getPassword());
+        userInfo.setRole(user.getRole());
+        userInfo.setEmail(user.getEmail());
+
+        if(user.getRole().equals(Role.PATIENT)) {
+            Patient patient = patientRepository.findById(user.getId()).orElse(new Patient());
+            userInfo.setName(patient.getName());
+            userInfo.setSurname(patient.getSurname());
+            userInfo.setPatronymic(patient.getPatronymic());
+        }
+        if(user.getRole().equals(Role.DOCTOR)) {
+            Doctor doctor = doctorRepository.findById(user.getId()).orElse(new Doctor());
+            userInfo.setName(doctor.getName());
+            userInfo.setSurname(doctor.getSurname());
+            userInfo.setPatronymic(doctor.getPatronymic());
+        }
+
+        return userInfo;
     }
   
     @GetMapping("/general")
@@ -81,9 +104,6 @@ public class HospitalController {
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
         User user = new User();
-        user.setName(signUpDto.getName());
-        user.setSurname(signUpDto.getSurname());
-        user.setPatronymic(signUpDto.getPatronymic());
         user.setLogin(signUpDto.getLogin());
         user.setEmail(signUpDto.getEmail());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
