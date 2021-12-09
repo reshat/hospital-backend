@@ -49,11 +49,11 @@ public class Doctor {
     //@JsonManagedReference
     private List<PatientRecord> patientRecords;
 
-    public Doctor(User user, String name, String surname, String patronymic, String specialization, String work_experiences) {
+    public Doctor(User user, String specialization, String work_experiences) {
         this.id = user.getId();
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
+        this.name = user.getName();
+        this.surname = user.getSurname();
+        this.patronymic = user.getPatronymic();
         this.specialization = specialization;
         this.work_experiences = work_experiences;
     }

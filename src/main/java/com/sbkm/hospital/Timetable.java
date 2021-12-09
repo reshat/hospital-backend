@@ -71,12 +71,12 @@ public class Timetable {
     public Timetable() {
     }
 
-    public Timetable(Long doctor_id, String surname, String name, String patronymic, LocalDate date_of_receipt, LocalTime receipt_start, LocalTime receipt_end) {
-        this.doctor_id = doctor_id;
-        this.surnameNInitials = surname
-                + " " + name.charAt(0);
-        if(!Objects.equals(patronymic, ""))
-            this.surnameNInitials += "." + patronymic.charAt(0)
+    public Timetable(Doctor doctor, LocalDate date_of_receipt, LocalTime receipt_start, LocalTime receipt_end) {
+        this.doctor_id = doctor.getId();
+        this.surnameNInitials = doctor.getSurname()
+                + " " + doctor.getName().charAt(0);
+        if(!Objects.equals(doctor.getPatronymic(), ""))
+            this.surnameNInitials += "." + doctor.getPatronymic().charAt(0)
                     + ".";
         this.workDate = date_of_receipt;
         this.workStart = receipt_start;
