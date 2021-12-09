@@ -60,13 +60,13 @@ class HospitalControllerTest {
         assertEquals(200, mr.getResponse().getStatus());
 
     }
-//    @Test
-//    @Order(3)
-//    public void registerDoctor() throws Exception {
-//        System.out.println("Doctor");
-//        String result = hc.registerDoctor(new SignUpDto("Ива","Ванг","Семенович","doctor","dddd@test.com","doctor"));
-//        assertEquals("User registered successfully",result);
-//    }
+    @Test
+    @Order(3)
+    public void registerDoctor() throws Exception {
+        System.out.println("Doctor");
+        String result = hc.registerUserTest(new SignUpDto("Ива","Ванг","Семенович","doctor","dddd@test.com","doctor"), "DOCTOR");
+        assertEquals("User registered successfully",result);
+    }
     @Test
     @Order(4)
     void getAllDoctor() {
@@ -122,42 +122,25 @@ class HospitalControllerTest {
         MvcResult mr = ra.andReturn();
         assertEquals(mr.getResponse().getStatus(),401);
     }
-    //@GetMapping("/calendar")
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
-//public @ResponseBody
-//Iterable<Calendar> getDoctorSchedule(@RequestParam String id) throws Exception {
-//    if(!doctorRepository.existsById(Long.valueOf(id))){
-//        throw new Exception("Unknown Doctor ID");
-//    }
-//    Iterable<Calendar> tt = generalService.getSchedule(Long.valueOf(id));
-//    return tt;
-//}
 
     @Test
-    void getCalendar() throws Exception {
-        this.mockMvc
-                .perform(get("/calendar").param("id","1"))
-                .andExpect(status().isOk());
+    @Order(8)
+    void viewPatients() throws Exception {
+        ResultActions ra = mockMvc.perform(get("/viewPatients")
+                .flashAttr("id", 1).header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("doctor:doctor".getBytes())));
+        //public PatientRecordDto(Long doctor_id, Long patient_id, String record, LocalDate date_of_receipt) {
+        MvcResult mr = ra.andReturn();
+        assertThat(mr.getResponse().getStatus()).isIn(200, 400);
     }
-//    @Test
-//    @Order(8)
-//    void viewPatients() throws Exception {
-//
-//        ResultActions ra = mockMvc.perform(get("/viewPatients")
-//                .flashAttr("id", 1).header(HttpHeaders.AUTHORIZATION,
-//                        "Basic " + Base64Utils.encodeToString("doctor:doctor".getBytes())));
-//        //public PatientRecordDto(Long doctor_id, Long patient_id, String record, LocalDate date_of_receipt) {
-//        MvcResult mr = ra.andReturn();
-//        assertThat(mr.getResponse().getStatus()).isIn(200, 400);
-//    }
-//    @Test
-//    @Order(9)
-//    public void registerAdmin() throws Exception {
-//        String result = hc.registerAdmin(new SignUpDto("Ива","Ванг","Семенович","doctor","dddd@test.com","doctor"));
-//        assertEquals("User registered successfully",result);
-//    }
+    @Test
+    @Order(9)
+    public void registerAdmin() throws Exception {
+        String result = hc.registerUserTest(new SignUpDto("Ава","Сава","Семенович","admin","admin@test.com","admin"), "ADMIN");
+        assertEquals("User registered successfully",result);
+    }
     //viewPatients
-//
+
 //    @Test
 //    void getDoctorSchedule() {
 //        ResponseEntity<String> result = template
