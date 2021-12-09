@@ -11,9 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.time.LocalTime;
-
 @RestController
 public class HospitalController {
     private final DoctorRepository doctorRepository;
@@ -112,7 +109,7 @@ public class HospitalController {
         if(!patientRepository.existsById(patientDto.getPatient_id())){
             return new ResponseEntity<>("Unknown Patient ID", HttpStatus.BAD_REQUEST);
         }
-        patientRepository.changeInfo(patientDto.getPatient_id(), patientDto.getName(), patientDto.getSurname(), patientDto.getPatronymic(), patientDto.getBirthDate());
+        patientRepository.changeInfo(patientDto.getPatient_id(), patientDto.getName(), patientDto.getSurname(), patientDto.getPatronymic(), patientDto.getBirth_date());
         return new ResponseEntity<>("Info successfully changed", HttpStatus.OK);
     }
 

@@ -8,7 +8,7 @@ public class PatientDto {
     private String name;
     private String surname;
     private String patronymic;
-    private LocalDate birthDate;
+    private LocalDate birth_date;
 
     public PatientDto() {
     }
@@ -18,7 +18,7 @@ public class PatientDto {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
-        this.birthDate = birthDate;
+        this.birth_date = birthDate;
     }
 
     public Long getPatient_id() {
@@ -53,11 +53,11 @@ public class PatientDto {
         this.patronymic = patronymic;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
+    public LocalDate getBirth_date() {
+        return birth_date;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+    public void setBirth_date(LocalDate birth_date) {
+        this.birth_date = birth_date;
     }
 }
