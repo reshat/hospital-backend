@@ -6,6 +6,12 @@ import java.time.LocalTime;
 
 @Entity(name = "AppointmentTable")
 @NamedQueries({
+        @NamedQuery(name = "AppointmentTable.getAppointmentInfo",
+                query = "select d.name, d.surname, d.patronymic, at.dateOfReceipt, at.timeOfReceipt " +
+                        "from AppointmentTable at " +
+                        "left join Doctor d on d.id = at.doctorId " +
+                        "where at.patientId = ?1 " +
+                        "group by d.name, d.surname, d.patronymic, at.dateOfReceipt, at.timeOfReceipt"),
         @NamedQuery(name = "AppointmentTable.getFreeSlots",
                 query = "select  timeOfReceipt " +
                         "from AppointmentTable " +
