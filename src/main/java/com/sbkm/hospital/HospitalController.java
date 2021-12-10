@@ -90,7 +90,8 @@ public class HospitalController {
         Iterable<Doctor> doctors = doctorRepository.findAll();
         return doctors;
     }
-    @PostMapping("/signup")
+    @PostMapping("/" +
+            "")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @ResponseBody
     public ResponseEntity<?> registerUser(@ModelAttribute SignUpDto signUpDto){
@@ -201,6 +202,18 @@ public class HospitalController {
         }
         Iterable<Calendar> tt = generalService.getSchedule(Long.valueOf(id));
         return tt;
+    }
+
+    @GetMapping("/appointmentInfo")
+    @PreAuthorize("hasAuthority('patient:read')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    Iterable<AppointmentInfo> getAppointmentInfo(@RequestParam String id) throws Exception {
+        if(!patientRepository.existsById(Long.valueOf(id))){
+            throw new Exception("Unknown Patient ID");
+        }
+        Iterable<AppointmentInfo> info = generalService.getAppointmentInfo(Long.valueOf(id));
+        return info;
     }
 
     @PostMapping("/appointmentFreeSlots")
