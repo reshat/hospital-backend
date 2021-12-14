@@ -90,8 +90,7 @@ public class HospitalController {
         Iterable<Doctor> doctors = doctorRepository.findAll();
         return doctors;
     }
-    @PostMapping("/" +
-            "")
+    @PostMapping("/signup")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @ResponseBody
     public ResponseEntity<?> registerUser(@ModelAttribute SignUpDto signUpDto){
