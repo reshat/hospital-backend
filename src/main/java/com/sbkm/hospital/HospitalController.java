@@ -122,42 +122,6 @@ public class HospitalController {
 
     }
 
-    public String registerUserTest(SignUpDto signUpDto, String role){
-
-        if(userRepository.existsByLogin(signUpDto.getLogin())){
-            return "Username is already taken!";
-        }
-
-
-        if(userRepository.existsByEmail(signUpDto.getEmail())){
-            return "Email is already taken!";
-        }
-        User user = new User();
-        user.setLogin(signUpDto.getLogin());
-        user.setEmail(signUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        if(role.equals("DOCTOR")){
-            user.setRole(Role.DOCTOR);
-        } else if (role.equals("ADMIN")) {
-            user.setRole(Role.ADMIN);
-        } else {
-            user.setRole(Role.PATIENT);
-        }
-
-        userRepository.save(user);
-
-        Patient patient = new Patient();
-        patient.setId(user.getId());
-        patient.setName(signUpDto.getName());
-        patient.setSurname(signUpDto.getSurname());
-        patient.setPatronymic(signUpDto.getPatronymic());
-
-        patientRepository.save(patient);
-
-        return "User registered successfully";
-
-    }
-
     @PostMapping("/changeInfo")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAuthority('patient:write')")
