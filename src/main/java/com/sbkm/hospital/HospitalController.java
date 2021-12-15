@@ -11,8 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 public class HospitalController {
     private final DoctorRepository doctorRepository;
@@ -90,6 +88,7 @@ public class HospitalController {
         Iterable<Doctor> doctors = doctorRepository.findAll();
         return doctors;
     }
+
     @PostMapping("/signup")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @ResponseBody
@@ -201,6 +200,18 @@ public class HospitalController {
         }
         Iterable<Calendar> tt = generalService.getSchedule(Long.valueOf(id));
         return tt;
+    }
+
+    @GetMapping("/patientList")
+    @PreAuthorize("hasAuthority('doctor:read')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    Iterable<PatientList> getAppointmentPatientList(@RequestParam String id) throws Exception {
+        if(!doctorRepository.existsById(Long.valueOf(id))){
+            throw new Exception("Unknown Doctor ID");
+        }
+        Iterable<PatientList> list = generalService.getPatientList(Long.valueOf(id));
+        return list;
     }
 
     @GetMapping("/appointmentInfo")

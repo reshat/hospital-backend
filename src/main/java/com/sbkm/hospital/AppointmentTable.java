@@ -24,7 +24,13 @@ import java.time.LocalTime;
                         "set patientId = ?1 " +
                         "where doctorId = ?2 " +
                         "and dateOfReceipt = ?3 " +
-                        "and timeOfReceipt = ?4")
+                        "and timeOfReceipt = ?4"),
+        @NamedQuery(name = "AppointmentTable.getPatientList",
+                query = "select id,name,surname,patronymic,birthDate " +
+                        "from Patient " +
+                        "where id in (select patientId " +
+                        "from AppointmentTable " +
+                        "where doctorId = ?1)")
 })
 
 public class AppointmentTable {
