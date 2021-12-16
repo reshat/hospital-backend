@@ -1,6 +1,5 @@
 package com.sbkm.hospital;
 
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,43 +74,87 @@ class HospitalControllerTest {
     }
     @Test
     void patientRecord() throws Exception {
-        //patientRecord
-        System.out.println(LocalDate.of(2021,12,7));
         ResultActions ra = mockMvc.perform(post("/patientRecord")
-                .flashAttr("patientRecordDto", new PatientRecordDto(1L,1L,"Все хорошо",LocalDate.of(2021,12,7))).header(HttpHeaders.AUTHORIZATION,
+                .flashAttr("patientRecordDto", new PatientRecordDto(1L,2L,"Все хорошо",LocalDate.of(2021,12,7))).header(HttpHeaders.AUTHORIZATION,
                         "Basic " + Base64Utils.encodeToString("doctor:pass".getBytes())));
-        //public PatientRecordDto(Long doctor_id, Long patient_id, String record, LocalDate date_of_receipt) {
             MvcResult mr = ra.andReturn();
-        assertThat(mr.getResponse().getStatus()).isIn(200, 400);
+        assertThat(mr.getResponse().getStatus()).isIn(200);
     }
     @Test
     void testRequest() throws Exception {
-        //patientRecord
         ResultActions ra = mockMvc.perform(get("/test").header(HttpHeaders.AUTHORIZATION,
                         "Basic " + Base64Utils.encodeToString("user:pass".getBytes())));
-        //public PatientRecordDto(Long doctor_id, Long patient_id, String record, LocalDate date_of_receipt) {
         MvcResult mr = ra.andReturn();
-        assertThat(mr.getResponse().getStatus()).isIn(200, 400);
+        assertThat(mr.getResponse().getStatus()).isIn(200);
     }
     @Test
     void testRequestFail() throws Exception {
-        //patientRecord
         ResultActions ra = mockMvc.perform(get("/test").header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("useer:pass".getBytes())));
-        //public PatientRecordDto(Long doctor_id, Long patient_id, String record, LocalDate date_of_receipt) {
         MvcResult mr = ra.andReturn();
         assertEquals(mr.getResponse().getStatus(),401);
     }
 
     @Test
     void viewPatients() throws Exception {
-        ResultActions ra = mockMvc.perform(get("/viewPatients")
-                .flashAttr("id", 1).header(HttpHeaders.AUTHORIZATION,
+        ResultActions ra = mockMvc.perform(get("/viewPatients").param("id", "1")
+                .header(HttpHeaders.AUTHORIZATION,
                         "Basic " + Base64Utils.encodeToString("doctor:pass".getBytes())));
-        //public PatientRecordDto(Long doctor_id, Long patient_id, String record, LocalDate date_of_receipt) {
         MvcResult mr = ra.andReturn();
-        assertThat(mr.getResponse().getStatus()).isIn(200, 400);
+        assertThat(mr.getResponse().getStatus()).isIn(200);
     }
 
+    @Test
+    void makeAnAppointment() throws Exception {//'2021-12-17', '10:00', '01:00'
+        AppointmentTableDto appointmentTableDto = new AppointmentTableDto(2L,1L,LocalDate.of(2021,12,17), LocalTime.of(10,0));
 
+        ResultActions ra = mockMvc.perform(post("/makeAnAppointment").flashAttr("appointmentTableDto",appointmentTableDto)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("doctor:pass".getBytes())));
+        MvcResult mr = ra.andReturn();
+        assertThat(mr.getResponse().getStatus()).isIn(200);
+    }
+    @Test
+    void appointmentFreeSlots() throws Exception {
+        AppointmentFreeSlotsDto appointmentFreeSlotsDto = new AppointmentFreeSlotsDto(1L, LocalDate.of(2021,12,17));
+
+        ResultActions ra = mockMvc.perform(post("/appointmentFreeSlots")
+                .flashAttr("appointmentFreeSlotsDto",appointmentFreeSlotsDto));
+        MvcResult mr = ra.andReturn();
+        assertThat(mr.getResponse().getStatus()).isIn(200);
+    }
+    @Test
+    void appointmentInfo() throws Exception {
+        ResultActions ra = mockMvc.perform(get("/appointmentInfo").param("id", "2")
+                .header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("user:pass".getBytes())));
+        MvcResult mr = ra.andReturn();
+        assertThat(mr.getResponse().getStatus()).isIn(200);
+    }
+    @Test
+    void patientList() throws Exception {
+        ResultActions ra = mockMvc.perform(get("/patientList").param("id", "1")
+                .header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("doctor:pass".getBytes())));
+        MvcResult mr = ra.andReturn();
+        assertThat(mr.getResponse().getStatus()).isIn(200);
+    }
+    @Test
+    void calendar() throws Exception {
+        ResultActions ra = mockMvc.perform(get("/calendar")
+                .param("id", "1"));
+        MvcResult mr = ra.andReturn();
+        assertThat(mr.getResponse().getStatus()).isIn(200);
+    }
+    @Test
+    void changeInfo() throws Exception {
+        PatientDto patientDto = new PatientDto(2L, "Олег", "Земсков","Иванович",LocalDate.of(2000,12,17));
+
+        ResultActions ra = mockMvc.perform(post("/changeInfo")
+                        .header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("user:pass".getBytes()))
+                .flashAttr("patientDto",patientDto));
+        MvcResult mr = ra.andReturn();
+        assertThat(mr.getResponse().getStatus()).isIn(200);
+    }
 }
