@@ -6,10 +6,17 @@ import java.time.LocalTime;
 
 @Entity(name = "AppointmentTable")
 @NamedQueries({
+        @NamedQuery(name = "AppointmentTable.getAppointmentInfo",
+                query = "select d.name, d.surname, d.patronymic, at.dateOfReceipt, at.timeOfReceipt " +
+                        "from AppointmentTable at " +
+                        "left join Doctor d on d.id = at.doctorId " +
+                        "where at.patientId = ?1 " +
+                        "group by d.name, d.surname, d.patronymic, at.dateOfReceipt, at.timeOfReceipt"),
         @NamedQuery(name = "AppointmentTable.getFreeSlots",
                 query = "select  timeOfReceipt " +
                         "from AppointmentTable " +
                         "where doctorId = ?1 " +
+                        "and dateOfReceipt = ?2 " +
                         "and patientId IS NULL " +
                         "group by timeOfReceipt"),
         @NamedQuery(name = "AppointmentTable.makeAnAppointment",
@@ -17,7 +24,18 @@ import java.time.LocalTime;
                         "set patientId = ?1 " +
                         "where doctorId = ?2 " +
                         "and dateOfReceipt = ?3 " +
-                        "and timeOfReceipt = ?4")
+                        "and timeOfReceipt = ?4"),
+        @NamedQuery(name = "AppointmentTable.getPatientList",
+                query = "select id,name,surname,patronymic,birthDate " +
+                        "from Patient " +
+                        "where id in (select patientId " +
+                        "from AppointmentTable " +
+                        "where doctorId = ?1)"),
+        @NamedQuery(name = "AppointmentTable.checkAppointments",
+        query = "select count(*)" +
+                "from AppointmentTable " +
+                "where patientId = ?1 " +
+                "and dateOfReceipt >= current_date ")
 })
 
 public class AppointmentTable {
@@ -66,14 +84,13 @@ public class AppointmentTable {
     @JoinColumn(name = "patient_id", insertable = false, updatable = false)
     //@JsonBackReference
     private Patient patient;
-//    @ManyToOne
-//    @JoinColumn(name = "doctor_id", insertable = false, updatable = false)
-//    //@JsonBackReference
-//    private Timetable doctor;
-//    @ManyToOne
-//    @JoinColumn(name = "work_date", insertable = false, updatable = false)
-//    //@JsonBackReference
-//    private Timetable workDate;
+    @ManyToOne
+    @JoinColumns({
+    @JoinColumn(name = "doctor_id", referencedColumnName="doctor_id", insertable = false, updatable = false),
+    @JoinColumn(name = "date_of_receipt", referencedColumnName="work_date", insertable = false, updatable = false)
+    })
+    //@JsonBackReference
+    private Timetable timetableId;
 
     public AppointmentTable() {
     }
@@ -140,6 +157,14 @@ public class AppointmentTable {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    public Timetable getTimetableId() {
+        return timetableId;
+    }
+
+    public void setTimetableId(Timetable workDate) {
+        this.timetableId = workDate;
     }
 
     @Override

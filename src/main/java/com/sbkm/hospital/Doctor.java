@@ -9,15 +9,6 @@ import java.util.List;
 @JsonIgnoreProperties({ "timetables", "appointmentTables", "patientRecords" })
 public class Doctor {
     @Id
-            @SequenceGenerator(
-                    name = "doctor_sequence",
-                    sequenceName = "doctor_sequence",
-                    allocationSize = 1
-            )
-            @GeneratedValue(
-                    strategy = GenerationType.SEQUENCE,
-                    generator = "doctor_sequence"
-            )
     private Long id;
     @Column(
             name = "name",
@@ -52,13 +43,14 @@ public class Doctor {
             orphanRemoval = true)
     //@JsonManagedReference
     private List<Timetable> timetables;
-    @OneToMany(mappedBy = "doctor",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    //@JsonManagedReference
-    private List<PatientRecord> patientRecords;
+//    @OneToMany(mappedBy = "doctor",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    //@JsonManagedReference
+//    private List<PatientRecord> patientRecords;
 
-    public Doctor(String name, String surname, String patronymic, String specialization, String work_experiences) {
+    public Doctor(User user, String name, String surname, String patronymic, String specialization, String work_experiences) {
+        this.id = user.getId();
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
@@ -124,14 +116,6 @@ public class Doctor {
 
     public void setWork_experiences(String work_experiences) {
         this.work_experiences = work_experiences;
-    }
-
-    public List<PatientRecord> getPatientRecords() {
-        return patientRecords;
-    }
-
-    public void setPatientRecords(List<PatientRecord> patientRecords) {
-        this.patientRecords = patientRecords;
     }
 
     @Override

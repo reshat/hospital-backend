@@ -11,9 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.time.LocalTime;
-
 @RestController
 public class HospitalController {
     private final DoctorRepository doctorRepository;
@@ -46,13 +43,34 @@ public class HospitalController {
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public @ResponseBody
-    User getAuthUser() {
+    UserInfo getAuthUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             return null;
         }
+
         User user = userRepository.findByLogin(auth.getName()).orElse(new User());
-        return user;
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(user.getId());
+        userInfo.setLogin(user.getLogin());
+        userInfo.setPassword(user.getPassword());
+        userInfo.setRole(user.getRole());
+        userInfo.setEmail(user.getEmail());
+
+        if(user.getRole().equals(Role.PATIENT)) {
+            Patient patient = patientRepository.findById(user.getId()).orElse(new Patient());
+            userInfo.setName(patient.getName());
+            userInfo.setSurname(patient.getSurname());
+            userInfo.setPatronymic(patient.getPatronymic());
+        }
+        if(user.getRole().equals(Role.DOCTOR)) {
+            Doctor doctor = doctorRepository.findById(user.getId()).orElse(new Doctor());
+            userInfo.setName(doctor.getName());
+            userInfo.setSurname(doctor.getSurname());
+            userInfo.setPatronymic(doctor.getPatronymic());
+        }
+
+        return userInfo;
     }
   
     @GetMapping("/general")
@@ -70,6 +88,7 @@ public class HospitalController {
         Iterable<Doctor> doctors = doctorRepository.findAll();
         return doctors;
     }
+
     @PostMapping("/signup")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @ResponseBody
@@ -84,9 +103,6 @@ public class HospitalController {
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
         User user = new User();
-        user.setName(signUpDto.getName());
-        user.setSurname(signUpDto.getSurname());
-        user.setPatronymic(signUpDto.getPatronymic());
         user.setLogin(signUpDto.getLogin());
         user.setEmail(signUpDto.getEmail());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
@@ -94,8 +110,28 @@ public class HospitalController {
 
         userRepository.save(user);
 
+        Patient patient = new Patient();
+        patient.setId(user.getId());
+        patient.setName(signUpDto.getName());
+        patient.setSurname(signUpDto.getSurname());
+        patient.setPatronymic(signUpDto.getPatronymic());
+
+        patientRepository.save(patient);
+
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
 
+    }
+
+    @PostMapping("/changeInfo")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PreAuthorize("hasAuthority('patient:write')")
+    @ResponseBody
+    public ResponseEntity<?> changeInfo(@ModelAttribute PatientDto patientDto){
+        if(!patientRepository.existsById(patientDto.getPatient_id())){
+            return new ResponseEntity<>("Unknown Patient ID", HttpStatus.BAD_REQUEST);
+        }
+        patientRepository.changeInfo(patientDto.getPatient_id(), patientDto.getName(), patientDto.getSurname(), patientDto.getPatronymic(), patientDto.getBirth_date());
+        return new ResponseEntity<>("Info successfully changed", HttpStatus.OK);
     }
 
     @PostMapping("/patientRecord")
@@ -130,14 +166,41 @@ public class HospitalController {
         return tt;
     }
 
-    @GetMapping("/appointmentFreeSlots")
+    @GetMapping("/patientList")
+    @PreAuthorize("hasAuthority('doctor:read')")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public @ResponseBody
-    Iterable<AppointmentFreeSlots> getAppointmentSlots(@RequestParam String id) throws Exception {
+    Iterable<PatientList> getAppointmentPatientList(@RequestParam String id) throws Exception {
         if(!doctorRepository.existsById(Long.valueOf(id))){
             throw new Exception("Unknown Doctor ID");
         }
-        Iterable<AppointmentFreeSlots> afs = generalService.getFreeSlots(Long.valueOf(id));
+        Iterable<PatientList> list = generalService.getPatientList(Long.valueOf(id));
+        return list;
+    }
+
+    @GetMapping("/appointmentInfo")
+    @PreAuthorize("hasAuthority('patient:read')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    Iterable<AppointmentInfo> getAppointmentInfo(@RequestParam String id) throws Exception {
+        if(!patientRepository.existsById(Long.valueOf(id))){
+            throw new Exception("Unknown Patient ID");
+        }
+        Iterable<AppointmentInfo> info = generalService.getAppointmentInfo(Long.valueOf(id));
+        return info;
+    }
+
+    @PostMapping("/appointmentFreeSlots")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public @ResponseBody
+    Iterable<AppointmentFreeSlots> getAppointmentSlots(@ModelAttribute AppointmentFreeSlotsDto appointmentFreeSlotsDto) throws Exception {
+        if(!doctorRepository.existsById(appointmentFreeSlotsDto.getId())){
+            throw new Exception("Unknown Doctor ID");
+        }
+        if(!timetableRepository.existsByDoctorIdAndWorkDate(appointmentFreeSlotsDto.getId(), appointmentFreeSlotsDto.getDate())){
+            throw new Exception("Incorrect date or doctor id");
+        }
+        Iterable<AppointmentFreeSlots> afs = generalService.getFreeSlots(appointmentFreeSlotsDto.getId(), appointmentFreeSlotsDto.getDate());
         return afs;
     }
 
@@ -152,7 +215,7 @@ public class HospitalController {
         if(!patientRepository.existsById(appointmentTableDto.getPatient_id())){
             return new ResponseEntity<>("Unknown Patient ID", HttpStatus.BAD_REQUEST);
         }
-        if(appointmentTableRepository.countByPatientId(appointmentTableDto.getPatient_id()) >= 2){
+        if(appointmentTableRepository.checkAppointments(appointmentTableDto.getPatient_id()) >= 2){
             return new ResponseEntity<>("Reached maximum number of appointments", HttpStatus.BAD_REQUEST);
         }
         if(!appointmentTableRepository.existsByDoctorIdAndDateOfReceiptAndTimeOfReceipt(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt(), appointmentTableDto.getTime_of_receipt())){

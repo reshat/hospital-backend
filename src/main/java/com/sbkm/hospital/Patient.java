@@ -8,17 +8,12 @@ import java.util.List;
 
 @Entity(name="Patient")
 @JsonIgnoreProperties({ "timetable", "patientRecords" })
+@NamedQuery(name = "Patient.changeInfo",
+query = "update Patient "+
+        "set name = ?2, surname = ?3, patronymic = ?4, birth_date = ?5 " +
+        "where id = ?1 ")
 public class Patient {
     @Id
-    @SequenceGenerator(
-            name = "patient_sequence",
-            sequenceName = "patient_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "patient_sequence"
-    )
     private Long id;
     @Column(
             name = "name",
@@ -39,7 +34,6 @@ public class Patient {
     private String patronymic;
     @Column(
             name="birth_date",
-            nullable = false,
             columnDefinition = "DATE"
     )
     private LocalDate birthDate;
@@ -55,7 +49,8 @@ public class Patient {
     //@JsonManagedReference
     private List<PatientRecord> patientRecords;
 
-    public Patient(String name, String surname, String patronymic, LocalDate birth_date) {
+    public Patient(User user, String name, String surname, String patronymic, LocalDate birth_date) {
+        this.id = user.getId();
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
