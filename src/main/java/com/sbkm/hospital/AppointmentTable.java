@@ -30,7 +30,12 @@ import java.time.LocalTime;
                         "from Patient " +
                         "where id in (select patientId " +
                         "from AppointmentTable " +
-                        "where doctorId = ?1)")
+                        "where doctorId = ?1)"),
+        @NamedQuery(name = "AppointmentTable.checkAppointments",
+        query = "select count(*)" +
+                "from AppointmentTable " +
+                "where patientId = ?1 " +
+                "and dateOfReceipt >= current_date ")
 })
 
 public class AppointmentTable {

@@ -16,5 +16,6 @@ public interface AppointmentTableRepository extends JpaRepository<AppointmentTab
     @Modifying
     void makeAnAppointment (Long patient_id, Long doctor_id, LocalDate date_of_receipt, LocalTime time_of_receipt);
     boolean existsByDoctorIdAndDateOfReceiptAndTimeOfReceipt(Long doctor_id, LocalDate date_of_receipt, LocalTime time_of_receipt);
+    int checkAppointments(Long patient_id);
     //boolean existsByDoctorIdAndDateOfReceiptAndTimeOfReceiptLessThanEqualAndReceiptEndGreaterThanEqual(Long doctor_id, LocalDate date_of_receipt, LocalTime time_start, LocalTime time_end);
 }

@@ -215,7 +215,7 @@ public class HospitalController {
         if(!patientRepository.existsById(appointmentTableDto.getPatient_id())){
             return new ResponseEntity<>("Unknown Patient ID", HttpStatus.BAD_REQUEST);
         }
-        if(appointmentTableRepository.countByPatientId(appointmentTableDto.getPatient_id()) >= 2){
+        if(appointmentTableRepository.checkAppointments(appointmentTableDto.getPatient_id()) >= 2){
             return new ResponseEntity<>("Reached maximum number of appointments", HttpStatus.BAD_REQUEST);
         }
         if(!appointmentTableRepository.existsByDoctorIdAndDateOfReceiptAndTimeOfReceipt(appointmentTableDto.getDoctor_id(), appointmentTableDto.getDate_of_receipt(), appointmentTableDto.getTime_of_receipt())){
