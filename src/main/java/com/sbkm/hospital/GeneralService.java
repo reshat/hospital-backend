@@ -38,7 +38,7 @@ public class GeneralService {
         this.patientRepository = patientRepository;
     }
     private static final String SQL_GET_PATIENT_LIST =
-            "select p.name, p.surname, p.patronymic, ap.date_of_receipt, ap.time_of_receipt " +
+            "select p.id, p.name, p.surname, p.patronymic, ap.date_of_receipt, ap.time_of_receipt " +
                     "from Patient p " +
                     "right join Appointment_Table ap on p.id = ap.patient_id " +
                     "where ap.doctor_id = :doctor_id " +

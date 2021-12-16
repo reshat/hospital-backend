@@ -1,11 +1,20 @@
 package com.sbkm.hospital;
 
 public class PatientList {
+    private Long id;
     private String name;
     private String surname;
     private String patronymic;
     private String dateOfReceipt;
     private String timeOfReceipt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -50,7 +59,8 @@ public class PatientList {
     public PatientList() {
     }
 
-    public PatientList(String name, String surname, String patronymic, String dateOfReceipt, String timeOfReceipt) {
+    public PatientList(Long id, String name, String surname, String patronymic, String dateOfReceipt, String timeOfReceipt) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
