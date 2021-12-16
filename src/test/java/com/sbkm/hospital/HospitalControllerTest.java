@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -49,14 +51,15 @@ class HospitalControllerTest {
                 .flashAttr("signUpDto", new SignUpDto("Олег","Тинькоф","Леонидович","user1","us1er@test.com","pass")));
         MvcResult mr = ra.andReturn();
         assertEquals(200, mr.getResponse().getStatus());
-
+        assertEquals(mr.getResponse().getContentAsString(),"User registered successfully");
     }
 
     @Test
-    void getAllDoctor() {
-        ResponseEntity<String> result = template
-                .getForEntity("/doctors", String.class);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+    void getAllDoctor() throws Exception {
+       this.mockMvc
+                .perform(get("/doctors")).andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+               .andExpect(jsonPath("$[0].id").value("1"))
+               .andExpect(status().isOk());
     }
     @Test
     public void basicAuth() throws Exception {
@@ -105,7 +108,7 @@ class HospitalControllerTest {
     }
 
     @Test
-    void makeAnAppointment() throws Exception {//'2021-12-17', '10:00', '01:00'
+    void makeAnAppointment() throws Exception {
         AppointmentTableDto appointmentTableDto = new AppointmentTableDto(2L,1L,LocalDate.of(2021,12,17), LocalTime.of(10,0));
 
         ResultActions ra = mockMvc.perform(post("/makeAnAppointment").flashAttr("appointmentTableDto",appointmentTableDto)
